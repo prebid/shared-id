@@ -25,6 +25,6 @@ The intention behind creating this new cookie space is the following:
 1. Module must send both the 1pc & 3pc to bid adapters
 1. SharedId.org/usync
    1. Open source and make available for download on Sharedid.org
-    1. TBD on whether we just just make the endpoint and a config to enter redirect urls into or the whole code base available.
+      1. TBD on whether we just just make the endpoint and a config to enter redirect urls into or the whole code base available.
    1. As an administrator of /usync, I want /usync to be able to create a mapping between it and the ad tech partners that decide to deploy it.
    1. As an administrator of /usync, I want /usync to call no more than five additional partners per sync so that our syncing footprint does not become overwhelming for publishers.   
