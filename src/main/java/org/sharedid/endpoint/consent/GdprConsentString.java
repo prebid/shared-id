@@ -43,9 +43,9 @@ public class GdprConsentString {
 
     private boolean isV1ConsentGiven(int vendorId) {
         boolean hasPurposeId = tcString.getPurposesConsent().contains(PURPOSE_1);
-        boolean hasRubiconVendorId = tcString.getVendorConsent().contains(vendorId);
+        boolean hasSharedIdVendorId = tcString.getVendorConsent().contains(vendorId);
 
-        return hasPurposeId && hasRubiconVendorId;
+        return hasPurposeId && hasSharedIdVendorId;
     }
 
     private boolean isV2ConsentGiven(int vendorId) {
