@@ -11,13 +11,10 @@ import org.springframework.stereotype.Component;
 @Component
 public class ReadOptOutHandler implements Handler<RoutingContext> {
     private String optOutCookieName;
-    private String legacyOptOutCookieName;
 
     @Autowired
-    public ReadOptOutHandler(@Value("${cookie.opt-out.name}") String optOutCookieName,
-                             @Value("${cookie.opt-out.legacy}") String legacyOptOutCookieName) {
+    public ReadOptOutHandler(@Value("${cookie.opt-out.name}") String optOutCookieName) {
         this.optOutCookieName = optOutCookieName;
-        this.legacyOptOutCookieName = legacyOptOutCookieName;
     }
 
     @Override
@@ -33,15 +30,6 @@ public class ReadOptOutHandler implements Handler<RoutingContext> {
 
     private boolean getOptOutStatus(RoutingContext routingContext) {
         Cookie optOutCookie = routingContext.getCookie(optOutCookieName);
-        if (optOutCookie != null) {
-            return true;
-        }
-
-        Cookie legacyOptOutCookie = routingContext.getCookie(legacyOptOutCookieName);
-        if (legacyOptOutCookie != null) {
-            return true;
-        }
-
-        return false;
+        return optOutCookie != null;
     }
 }

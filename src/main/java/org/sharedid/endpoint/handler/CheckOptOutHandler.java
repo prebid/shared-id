@@ -17,19 +17,16 @@ public class CheckOptOutHandler implements Handler<RoutingContext> {
     private static final Logger logger = LoggerFactory.getLogger(CheckOptOutHandler.class);
 
     private String optOutCookieValue;
-    private String legacyOptOutCookieValue;
     private String sharedIdCookieName;
     private Long sharedIdOptOutTtl;
     private Boolean isSecureCookiesEnabled;
 
     @Autowired
     public CheckOptOutHandler(@Value("${cookie.shared-id.opt-out-value}") String optOutCookieValue,
-                              @Value("${cookie.shared-id.legacy-opt-out-value}") String legacyOptOutCookieValue,
                               @Value("${cookie.shared-id.name}") String sharedIdCookieName,
                               @Value("${cookie.shared-id.opt-out-ttl}") Long sharedIdOptOutTtl,
                               @Value("${cookies.secure}") Boolean isSecureCookiesEnabled) {
         this.optOutCookieValue = optOutCookieValue;
-        this.legacyOptOutCookieValue = legacyOptOutCookieValue;
         this.sharedIdCookieName = sharedIdCookieName;
         this.sharedIdOptOutTtl = sharedIdOptOutTtl;
         this.isSecureCookiesEnabled = isSecureCookiesEnabled;
@@ -41,8 +38,7 @@ public class CheckOptOutHandler implements Handler<RoutingContext> {
 
         String userId = dataContext.getUserId();
 
-        boolean hasOptedOutUserId =
-                optOutCookieValue.equals(userId) || legacyOptOutCookieValue.equals(userId);
+        boolean hasOptedOutUserId = optOutCookieValue.equals(userId);
 
         if (hasOptedOutUserId || dataContext.getHasOptOutCookie()) {
             logger.debug("Is opted out");

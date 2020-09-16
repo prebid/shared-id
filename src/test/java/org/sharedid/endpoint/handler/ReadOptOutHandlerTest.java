@@ -34,7 +34,7 @@ public class ReadOptOutHandlerTest {
 
         when(routingContext.data()).thenReturn(data);
 
-        handler = new ReadOptOutHandler("optout", "legacy");
+        handler = new ReadOptOutHandler("optout");
     }
 
     @Test
@@ -55,25 +55,6 @@ public class ReadOptOutHandlerTest {
         when(routingContext.getCookie(anyString())).thenAnswer(invocation -> {
             if (invocation.getArgument(0) == "optout") {
                 return Cookie.cookie("optout", "value");
-            }
-
-            return null;
-        });
-
-        DataContext dataContext = DataContext.from(routingContext);
-
-        handler.handle(routingContext);
-
-        assertThat(dataContext.getHasOptOutCookie(), is(true));
-
-        verify(routingContext, times(1)).next();
-    }
-
-    @Test
-    public void testLegacyCookie() {
-        when(routingContext.getCookie(anyString())).thenAnswer(invocation -> {
-            if (invocation.getArgument(0) == "legacy") {
-                return Cookie.cookie("legacy", "value");
             }
 
             return null;

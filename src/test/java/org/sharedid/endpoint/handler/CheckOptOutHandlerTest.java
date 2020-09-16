@@ -39,7 +39,6 @@ public class CheckOptOutHandlerTest {
 
         handler = new CheckOptOutHandler(
                 "00",
-                "000-000",
                 "sharedid",
                 123L,
                 false);
@@ -76,20 +75,6 @@ public class CheckOptOutHandlerTest {
         verify(response, times(1)).setStatusCode(204);
         verify(response, times(1)).end();
         verify(response, times(1)).addCookie(any(Cookie.class));
-        verify(routingContext, times(0)).next();
-    }
-
-    @Test
-    public void testLegacyOptedOutUserId() {
-        when(routingContext.response()).thenReturn(response);
-
-        DataContext dataContext = DataContext.from(routingContext);
-        dataContext.setUserId("000-000");
-
-        handler.handle(routingContext);
-
-        verify(response, times(1)).setStatusCode(204);
-        verify(response, times(1)).end();
         verify(routingContext, times(0)).next();
     }
 }
