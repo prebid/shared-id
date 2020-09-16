@@ -77,12 +77,6 @@ public class ProcessOptOutHandler implements Handler<RoutingContext> {
 
         if (StringUtils.isNotBlank(redirectParam)) {
             optOutRedirectParameterExists.mark();
-
-            //this is a temporary fix for the ad choices rubicon opt out.
-            if (redirectParam.startsWith("http://pixel.rubiconproject.com/oba/optout")) {
-                redirectParam = redirectParam.replaceFirst("http", "https");
-            }
-
             ResponseUtil.redirect(response, redirectParam);
             return;
         }
