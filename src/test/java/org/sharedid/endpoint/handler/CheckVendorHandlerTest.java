@@ -12,6 +12,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.sharedid.endpoint.consent.GdprConsentString;
 import org.sharedid.endpoint.context.DataContext;
+import org.sharedid.endpoint.service.LocationService;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -38,6 +39,9 @@ public class CheckVendorHandlerTest {
     @Mock
     private HttpServerResponse response;
 
+    @Mock
+    private LocationService locationService;
+
     private Map<String, Object> data;
 
     @BeforeEach
@@ -48,7 +52,7 @@ public class CheckVendorHandlerTest {
 
         when(metricRegistry.meter(anyString())).thenReturn(meter);
 
-        handler = new CheckVendorHandler(metricRegistry);
+        handler = new CheckVendorHandler(locationService, metricRegistry);
     }
 
     @Test
@@ -63,6 +67,7 @@ public class CheckVendorHandlerTest {
     public void testNoGdprConsentString() {
         DataContext dataContext = DataContext.from(routingContext);
         dataContext.setVendor(100);
+        dataContext.setIsGdprCountry(true);
 
         handler.handle(routingContext);
 
@@ -75,6 +80,7 @@ public class CheckVendorHandlerTest {
         DataContext dataContext = DataContext.from(routingContext);
         dataContext.setVendor(52);
         dataContext.setGdprConsentString(new GdprConsentString("COuQACgOuQACgM-AAAENAPCAAIAAAIAAAAAAAjAAAAAAAABAAAAEYAAAAAAAAIAAAAA="));
+        dataContext.setIsGdprCountry(true);
 
         handler.handle(routingContext);
 
@@ -89,6 +95,7 @@ public class CheckVendorHandlerTest {
         DataContext dataContext = DataContext.from(routingContext);
         dataContext.setVendor(52);
         dataContext.setGdprConsentString(new GdprConsentString("COuQACgOuQACgM-AAAENAPCAAIAAAIAAAAAAAjAAAAAAQIAAAAAAAAAAAA=="));
+        dataContext.setIsGdprCountry(true);
 
         handler.handle(routingContext);
 

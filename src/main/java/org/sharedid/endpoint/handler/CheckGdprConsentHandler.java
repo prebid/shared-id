@@ -156,6 +156,8 @@ public class CheckGdprConsentHandler implements Handler<RoutingContext> {
             .map(isGdprRequired -> {
                 //if gdpr is required, consent is not given
                 //otherwise, not in an eea country and consent is given
+                dataContext.setIsGdprCountry(isGdprRequired);
+
                 if (isGdprRequired) {
                     logger.debug("Request is from an EEA country. Consent is not given");
                     requestInEeaCountryMeter.mark();

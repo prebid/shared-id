@@ -24,6 +24,7 @@ public class DataContext {
     private static final String DATA_GDPR_CONSENT_STRING = "data.gdprConsentString";
     private static final String DATA_AUDIT_COOKIE = "data.auditCookie";
     private static final String DATA_GEO_QUERY = "data.geoQuery";
+    private static final String DATA_IS_GDPR_COUNTRY = "data.isGdprCountry";
 
     private RoutingContext routingContext;
 
@@ -152,6 +153,14 @@ public class DataContext {
 
     public void setGeoQuery(String geoQuery) {
         put(DATA_GEO_QUERY, geoQuery);
+    }
+
+    public Boolean getIsGdprCountry() {
+        return get(DATA_IS_GDPR_COUNTRY);
+    }
+
+    public void setIsGdprCountry(Boolean isGdprCountry) {
+        put(DATA_IS_GDPR_COUNTRY, isGdprCountry);
     }
 
     private <T> T get(String key, T def) {
