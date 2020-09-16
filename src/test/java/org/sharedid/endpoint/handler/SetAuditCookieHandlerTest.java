@@ -3,6 +3,7 @@ package org.sharedid.endpoint.handler;
 import com.codahale.metrics.Meter;
 import com.codahale.metrics.MetricRegistry;
 import io.vertx.core.Future;
+import io.vertx.core.http.Cookie;
 import io.vertx.core.http.HttpServerRequest;
 import io.vertx.ext.web.RoutingContext;
 import org.junit.jupiter.api.BeforeEach;
@@ -14,7 +15,6 @@ import org.sharedid.endpoint.context.DataContext;
 import org.sharedid.endpoint.model.AuditCookie;
 import org.sharedid.endpoint.service.AuditCookieService;
 import org.sharedid.endpoint.service.LocationService;
-import org.sharedid.endpoint.util.ExtraHeadersCookie;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -82,7 +82,7 @@ public class SetAuditCookieHandlerTest {
 
         assertThat(auditCookie.getRenewedTimestampSeconds(), is(not(0L)));
 
-        verify(routingContext, times(1)).addCookie(any(ExtraHeadersCookie.class));
+        verify(routingContext, times(1)).addCookie(any(Cookie.class));
         verify(routingContext, times(1)).next();
     }
 
@@ -101,7 +101,7 @@ public class SetAuditCookieHandlerTest {
 
         handler.handle(routingContext);
 
-        verify(routingContext, times(1)).addCookie(any(ExtraHeadersCookie.class));
+        verify(routingContext, times(1)).addCookie(any(Cookie.class));
         verify(routingContext, times(1)).next();
     }
 }

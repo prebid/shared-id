@@ -2,6 +2,7 @@ package org.sharedid.endpoint.handler;
 
 import com.codahale.metrics.Meter;
 import com.codahale.metrics.MetricRegistry;
+import io.vertx.core.http.CookieSameSite;
 import org.sharedid.endpoint.context.DataContext;
 import org.sharedid.endpoint.model.AuditCookie;
 import org.sharedid.endpoint.model.AuditCookieSerializationException;
@@ -103,8 +104,9 @@ public class SetAuditCookieHandler implements Handler<RoutingContext> {
                 }
 
                 cookie.setSecure(isSecure);
+                cookie.setSameSite(CookieSameSite.NONE);
 
-                routingContext.addCookie(ExtraHeadersCookie.fromCookie(cookie));
+                routingContext.addCookie(cookie);
             } catch (AuditCookieSerializationException e) {
                 logger.debug("Failed to serialize audit cookie {} {}", result.result(), e.cause.getMessage());
                 serializeAuditCookieFailedMeter.mark();
