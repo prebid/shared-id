@@ -4,6 +4,7 @@ import io.vertx.core.Handler;
 import io.vertx.ext.web.RoutingContext;
 import org.apache.commons.lang3.StringUtils;
 import org.sharedid.endpoint.context.DataContext;
+import org.sharedid.endpoint.util.ResponseUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -38,6 +39,8 @@ public class ReadParametersHandler implements Handler<RoutingContext> {
                 dataContext.setVendor(vendor);
             } catch (NumberFormatException e) {
                 logger.debug("Vendor param {} is not a number", vendorParam);
+                ResponseUtil.badRequest(routingContext.response());
+                return;
             }
         }
 
