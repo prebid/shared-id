@@ -32,9 +32,6 @@ public class CheckGdprConsentHandlerTest {
     private CheckGdprConsentHandler handler;
 
     @Mock
-    private LocationService locationService;
-
-    @Mock
     private MetricRegistry metricRegistry;
 
     @Mock
@@ -56,7 +53,7 @@ public class CheckGdprConsentHandlerTest {
 
         when(metricRegistry.meter(anyString())).thenReturn(meter);
 
-        handler = new CheckGdprConsentHandler(locationService, metricRegistry);
+        handler = new CheckGdprConsentHandler(metricRegistry);
     }
 
     @Test
@@ -72,6 +69,11 @@ public class CheckGdprConsentHandlerTest {
 
     @Test
     public void testMissingGdprConsentParam() {
+        when(routingContext.response()).thenReturn(response);
+
+        DataContext dataContext = DataContext.from(routingContext);
+        dataContext.setIsGdprCountry(false);
+
         handler.handle(routingContext);
 
         verify(routingContext, times(1)).next();
@@ -80,11 +82,10 @@ public class CheckGdprConsentHandlerTest {
 
     @Test
     public void testMalformedGdprString(Vertx vertx, VertxTestContext context) {
-        when(locationService.getCountryForRequest(any())).thenReturn(Future.succeededFuture("DE"));
-
         when(routingContext.response()).thenReturn(response);
 
         DataContext dataContext = DataContext.from(routingContext);
+        dataContext.setIsGdprCountry(true);
 
         dataContext.setGdprConsentParam("malformed");
         dataContext.setGdprConsentString(null);
@@ -120,8 +121,6 @@ public class CheckGdprConsentHandlerTest {
 
     @Test
     public void testGdprConsentStringDeniedEEACountry(Vertx vertx, VertxTestContext context) throws Exception {
-        when(locationService.getCountryForRequest(any())).thenReturn(Future.succeededFuture("DE"));
-
         when(routingContext.response()).thenReturn(response);
 
         String consentString = "COuQACgOuQACgM-AAAENAPCAAIAAAIAAAAAAAjQAYAFABQAAAAAA";
@@ -130,6 +129,7 @@ public class CheckGdprConsentHandlerTest {
                 new GdprConsentString(consentString);
 
         DataContext dataContext = DataContext.from(routingContext);
+        dataContext.setIsGdprCountry(true);
         dataContext.setGdprConsentParam(consentString);
         dataContext.setGdprConsentString(gdprConsentString);
 
@@ -146,8 +146,6 @@ public class CheckGdprConsentHandlerTest {
 
     @Test
     public void testGdprConsentStringDeniedNonEEACountry(Vertx vertx, VertxTestContext context) throws Exception {
-        when(locationService.getCountryForRequest(any())).thenReturn(Future.succeededFuture("US"));
-
         when(routingContext.response()).thenReturn(response);
 
         String consentString = "COuQACgOuQACgM-AAAENAPCAAIAAAIAAAAAAAjQAYAFABQAAAAAA";
@@ -156,6 +154,7 @@ public class CheckGdprConsentHandlerTest {
                 new GdprConsentString(consentString);
 
         DataContext dataContext = DataContext.from(routingContext);
+        dataContext.setIsGdprCountry(false);
         dataContext.setGdprConsentParam(consentString);
         dataContext.setGdprConsentString(gdprConsentString);
 
