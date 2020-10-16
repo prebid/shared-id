@@ -43,7 +43,7 @@ public class SetLocationHandler implements Handler<RoutingContext> {
         DataContext dataContext = DataContext.from(context);
 
         HttpServerResponse response = context.response();
-        
+
         locationService.getCountryForRequest(context.request())
                 .map(geoQuery -> {
                     if (StringUtils.isNotBlank(geoQuery)) {
