@@ -1,4 +1,4 @@
-# SharedID Explainer
+# SharedID
 
 The SharedID.org namespace has been utilized to set a standard third-party cookie.  This cookie pool is fully deployed across a large, global browser footprint.  It has an opt-out and is compliant with IAB TCF consent strings when present.  The cookie writing semantic for SharedID runs from an AWS instance.
 
@@ -25,6 +25,27 @@ The intention behind creating this new cookie space is the following:
 1. Module must send both the 1pc & 3pc to bid adapters
 1. SharedId.org/usync
    1. Open source and make available for download on Sharedid.org
-      1. TBD on whether we just just make the endpoint and a config to enter redirect urls into or the whole code base available.
    1. As an administrator of /usync, I want /usync to be able to create a mapping between it and the ad tech partners that decide to deploy it.
    1. As an administrator of /usync, I want /usync to call no more than five additional partners per sync so that our syncing footprint does not become overwhelming for publishers.   
+
+## Application Startup
+
+Application is a standard maven java project. Use maven to compile and package locally.
+
+### Run locally
+
+```
+./start.sh
+```
+
+### Build docker image
+```
+mvn clean compile package docker:build
+```
+
+### Push docker image
+Requires proper authentication with AWS. Login using the AWS CLI, or make sure that AWS credentials can be found on the
+host, either through environment variables or EC2 instance metadata.
+```
+mvn docker:push
+```
