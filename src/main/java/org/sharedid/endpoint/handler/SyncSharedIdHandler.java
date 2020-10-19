@@ -1,7 +1,6 @@
 package org.sharedid.endpoint.handler;
 
 import de.huxhorn.sulky.ulid.ULID;
-import io.netty.util.internal.StringUtil;
 import io.vertx.core.Handler;
 import io.vertx.core.json.DecodeException;
 import io.vertx.core.json.JsonObject;
@@ -76,7 +75,7 @@ public class SyncSharedIdHandler implements Handler<RoutingContext> {
             return;
         }
 
-        if (newSharedId.equals(sharedIdOptOutValue)) {
+        if (newSharedId.equals(sharedIdOptOutValue) || userId.equals(sharedIdOptOutValue)) {
             dataContext.setUserId(userId);
             dataContext.setIsSyncedUserId(true);
             routingContext.next();
@@ -100,7 +99,6 @@ public class SyncSharedIdHandler implements Handler<RoutingContext> {
 
         dataContext.setUserId(userId);
         dataContext.setIsSyncedUserId(true);
-
         routingContext.next();
     }
 }
