@@ -76,7 +76,7 @@ public class SyncSharedIdHandler implements Handler<RoutingContext> {
         }
 
         if (newSharedId.equals(sharedIdOptOutValue) || userId.equals(sharedIdOptOutValue)) {
-            dataContext.setUserId(userId);
+            dataContext.setUserId(sharedIdOptOutValue);
             dataContext.setIsSyncedUserId(true);
             routingContext.next();
             return;
