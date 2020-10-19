@@ -23,12 +23,11 @@
         </main>
         <script type="application/javascript">
             function checkOptOutStatus() {
-                var hasOptOutCookie = document.cookie.indexOf("{{opt_out_cookie_name}}") != -1;
                 var isSharedIdOptOut = document.cookie.indexOf("{{shared_id_cookie_name}}={{opt_out_value}}") != -1;
 
                 var message = document.getElementById("message");
 
-                if (hasOptOutCookie || isSharedIdOptOut) {
+                if (isSharedIdOptOut) {
                     message.textContent = "Thank you. We have recorded your preferences."
                 } else {
                     message.textContent = "The opt out was unsuccessful. Please note that you must have cookies enabled in order to opt out.";

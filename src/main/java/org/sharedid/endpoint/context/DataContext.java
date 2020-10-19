@@ -11,7 +11,6 @@ import org.sharedid.endpoint.model.AuditCookie;
 public class DataContext {
     private static final String DATA_DATA_CONTEXT = "data.dataContext";
     private static final String DATA_IS_OPTED_OUT = "data.isOptedOut";
-    private static final String DATA_HAS_OPT_OUT_COOKIE = "data.hasOptOutCookie";
     private static final String DATA_IS_GDPR_PARAM = "data.isGdprParam";
     private static final String DATA_GDPR_CONSENT_PARAM = "data.gdprConsentParam";
     private static final String DATA_US_PRIVACY_PARAM = "data.usPrivacyParam";
@@ -49,14 +48,6 @@ public class DataContext {
 
     public void setIsOptedOut(boolean isOptedOut) {
         put(DATA_IS_OPTED_OUT, isOptedOut);
-    }
-
-    public boolean getHasOptOutCookie() {
-        return get(DATA_HAS_OPT_OUT_COOKIE, false);
-    }
-
-    public void setHasOptOutCookie(boolean hasOptOutCookie) {
-        put(DATA_HAS_OPT_OUT_COOKIE, hasOptOutCookie);
     }
 
     public String isGdprParam() {

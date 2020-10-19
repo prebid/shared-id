@@ -28,7 +28,6 @@ public class ProcessOptOutHandler implements Handler<RoutingContext> {
     private String auditCookieName;
     private String sharedIdOptOutValue;
     private Long sharedIdOptOutTtl;
-    private String optOutCookieName;
     private Boolean isSecureCookiesEnabled;
 
     private Meter optOutRedirectParameterExists;
@@ -38,14 +37,12 @@ public class ProcessOptOutHandler implements Handler<RoutingContext> {
                                 @Value("${cookie.audit.name}") String auditCookieName,
                                 @Value("${cookie.shared-id.opt-out-value}") String sharedIdOptOutValue,
                                 @Value("${cookie.shared-id.opt-out-ttl}") Long sharedIdOptOutTtl,
-                                @Value("${cookie.opt-out.name}") String optOutCookieName,
                                 @Value("${cookies.secure}") Boolean isSecureCookiesEnabled,
                                 MetricRegistry metricRegistry) {
         this.sharedIdCookieName = sharedIdCookieName;
         this.auditCookieName = auditCookieName;
         this.sharedIdOptOutValue = sharedIdOptOutValue;
         this.sharedIdOptOutTtl = sharedIdOptOutTtl;
-        this.optOutCookieName = optOutCookieName;
         this.isSecureCookiesEnabled = isSecureCookiesEnabled;
 
         this.optOutRedirectParameterExists = metricRegistry.meter(METRIC_OPT_OUT_REDIRECT_PARAMETER_EXISTS);
@@ -81,7 +78,6 @@ public class ProcessOptOutHandler implements Handler<RoutingContext> {
             return;
         }
 
-        routingContext.put("opt_out_cookie_name", optOutCookieName);
         routingContext.put("shared_id_cookie_name", sharedIdCookieName);
         routingContext.put("opt_out_value", sharedIdOptOutValue);
 

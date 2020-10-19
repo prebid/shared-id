@@ -40,7 +40,7 @@ public class CheckOptOutHandler implements Handler<RoutingContext> {
 
         boolean hasOptedOutUserId = optOutCookieValue.equals(userId);
 
-        if (hasOptedOutUserId || dataContext.getHasOptOutCookie()) {
+        if (hasOptedOutUserId) {
             logger.debug("Is opted out");
             //update opt out cookie ttl
             updateOptOutCookie(routingContext);

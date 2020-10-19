@@ -51,7 +51,6 @@ public class ProcessOptOutHandlerTest {
                 "audit",
                 "00",
                 123L,
-                "optout",
                 true,
                 metricRegistry);
     }

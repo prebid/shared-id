@@ -67,7 +67,6 @@ public class RouteConfiguration {
                 .handler(handlerRegistry.get(AddDefaultHeadersHandler.class))
                 .handler(handlerRegistry.get(ReadParametersHandler.class))
                 .handler(handlerRegistry.get(ReadSharedIdHandler.class))
-                .handler(handlerRegistry.get(ReadOptOutHandler.class))
                 .handler(handlerRegistry.get(CheckOptOutHandler.class))
                 .handler(handlerRegistry.get(SetLocationHandler.class))
                 .handler(handlerRegistry.get(ParseGdprConsentStringHandler.class))
