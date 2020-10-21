@@ -18,7 +18,7 @@ import org.springframework.stereotype.Component;
 public class CheckGdprConsentHandler implements Handler<RoutingContext> {
     private static final Logger logger = LoggerFactory.getLogger(CheckGdprConsentHandler.class);
 
-    public static final int SHARED_ID_VENDOR_ID = 52;
+    public static final int SHARED_ID_VENDOR_ID = 887;
 
     private static final String METRIC_CONSENT_NOT_GIVEN = "shared-id.handler.consent.consent_not_given";
     private static final String METRIC_CONSENT_GIVEN = "shared-id.handler.consent.consent_given";
