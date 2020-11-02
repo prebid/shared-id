@@ -53,7 +53,7 @@ public class CheckGdprConsentHandlerTest {
 
         when(metricRegistry.meter(anyString())).thenReturn(meter);
 
-        handler = new CheckGdprConsentHandler(metricRegistry);
+        handler = new CheckGdprConsentHandler(metricRegistry, 52);
     }
 
     @Test

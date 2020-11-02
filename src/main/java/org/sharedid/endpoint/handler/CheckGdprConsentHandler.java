@@ -12,13 +12,12 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 @Component
 public class CheckGdprConsentHandler implements Handler<RoutingContext> {
     private static final Logger logger = LoggerFactory.getLogger(CheckGdprConsentHandler.class);
-
-    public static final int SHARED_ID_VENDOR_ID = 887;
 
     private static final String METRIC_CONSENT_NOT_GIVEN = "shared-id.handler.consent.consent_not_given";
     private static final String METRIC_CONSENT_GIVEN = "shared-id.handler.consent.consent_given";
@@ -30,6 +29,8 @@ public class CheckGdprConsentHandler implements Handler<RoutingContext> {
             "shared-id.handler.consent.consent_string_from_request_parameter";
     private static final String METRIC_CONSENT_STRING_NOT_FOUND = "shared-id.handler.consent.consent_string_not_found";
 
+    private Integer sharedIdVendorId;
+
     private Meter consentNotGivenMeter;
     private Meter consentGivenMeter;
     private Meter consentGivenByConsentStringMeter;
@@ -38,7 +39,10 @@ public class CheckGdprConsentHandler implements Handler<RoutingContext> {
     private Meter consentStringNotFoundMeter;
 
     @Autowired
-    public CheckGdprConsentHandler(MetricRegistry metricRegistry) {
+    public CheckGdprConsentHandler(MetricRegistry metricRegistry,
+                                   @Value("${gdpr.vendor-id}") Integer sharedIdVendorId) {
+        this.sharedIdVendorId = sharedIdVendorId;
+
         this.consentNotGivenMeter = metricRegistry.meter(METRIC_CONSENT_NOT_GIVEN);
         this.consentGivenMeter = metricRegistry.meter(METRIC_CONSENT_GIVEN);
         this.consentGivenByConsentStringMeter = metricRegistry.meter(METRIC_CONSENT_GIVEN_BY_CONSENT_STRING);
@@ -92,7 +96,7 @@ public class CheckGdprConsentHandler implements Handler<RoutingContext> {
         boolean isConsentGiven = false;
 
         if (gdprConsentString != null) {
-            isConsentGiven = gdprConsentString.isConsentGiven(SHARED_ID_VENDOR_ID);
+            isConsentGiven = gdprConsentString.isConsentGiven(sharedIdVendorId);
         } else {
             if (StringUtils.isNotBlank(gdprConsentParam)) {
                 //consent string is malformed, consent is not given

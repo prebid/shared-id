@@ -8,6 +8,7 @@ import io.vertx.ext.web.RoutingContext;
 import io.vertx.ext.web.common.template.TemplateEngine;
 import io.vertx.ext.web.handler.BodyHandler;
 import io.vertx.ext.web.handler.CorsHandler;
+import io.vertx.ext.web.handler.StaticHandler;
 import io.vertx.ext.web.handler.TemplateHandler;
 import io.vertx.ext.web.templ.handlebars.HandlebarsTemplateEngine;
 import org.sharedid.endpoint.handler.*;
@@ -62,6 +63,9 @@ public class RouteConfiguration {
                                 .allowedMethod(HttpMethod.GET)
                                 .allowedMethod(HttpMethod.POST)
                                 .allowedMethod(HttpMethod.OPTIONS));
+
+        router.get("/")
+                .handler(StaticHandler.create().setIndexPage("index.html"));
 
         router.get("/usync")
                 .handler(handlerRegistry.get(AddDefaultHeadersHandler.class))

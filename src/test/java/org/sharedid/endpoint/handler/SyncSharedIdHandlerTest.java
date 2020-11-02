@@ -22,7 +22,7 @@ import static org.mockito.Mockito.*;
         MockitoExtension.class
 })
 public class SyncSharedIdHandlerTest {
-    private static final String optout = "00000000000000000000000000";
+    private static final String OPTOUT = "00000000000000000000000000";
 
     private SyncSharedIdHandler handler;
 
@@ -38,7 +38,7 @@ public class SyncSharedIdHandlerTest {
     public void setup() {
         data = new HashMap<>();
 
-        handler = new SyncSharedIdHandler(optout);
+        handler = new SyncSharedIdHandler(OPTOUT);
     }
 
     @Test
@@ -196,7 +196,7 @@ public class SyncSharedIdHandlerTest {
         dataContext.setUserId(generatedUlid);
 
         JsonObject json = new JsonObject();
-        json.put("sharedId", optout);
+        json.put("sharedId", OPTOUT);
         when(routingContext.getBodyAsJson()).thenReturn(json);
 
         handler.handle(routingContext);
@@ -204,7 +204,7 @@ public class SyncSharedIdHandlerTest {
         String userId = dataContext.getUserId();
         boolean isSyncedUserId = dataContext.isSyncedUserId();
 
-        assertThat(userId, is(generatedUlid));
+        assertThat(userId, is(OPTOUT));
         assertThat(isSyncedUserId, is(true));
 
         verify(response, times(0)).setStatusCode(400);
