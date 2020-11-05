@@ -4,9 +4,9 @@ orbs:
 #  aws-ecr: circleci/aws-ecr@6.14.0
   maven: circleci/maven@0.0.12
 workflows:
+  docker:
+    - image: circleci/openjdk:11.0.3-jdk-stretch
   maven_test:
-    docker:
-      - image: circleci/openjdk:11.0.3-jdk-stretch
     jobs:
       - maven/test
 #  publish:
