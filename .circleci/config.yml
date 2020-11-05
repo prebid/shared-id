@@ -1,13 +1,14 @@
-version: 2.1
+version: 2.0
 orbs:
 #  aws-cloudformation: orbss/aws-cloudformation@0.1.6
 #  aws-ecr: circleci/aws-ecr@6.14.0
   maven: circleci/maven@0.0.12
-workflows:
-  docker:
-    - image: circleci/openjdk:11.0.3-jdk-stretch
-  maven_test:
-    jobs:
+jobs:
+  build:
+    docker:
+      - image: circleci/openjdk:11.0.3-jdk-stretch
+    steps:
+      - checkout
       - maven/test
 #  publish:
 #    steps:
