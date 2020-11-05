@@ -9,7 +9,7 @@ jobs:
       - image: circleci/openjdk:11.0.3-jdk-stretch
     steps:
       - checkout
-      - maven/test
+      - run: ./mvnw package
 #  publish:
 #    steps:
 #      - aws-ecr/build-and-push-image:
