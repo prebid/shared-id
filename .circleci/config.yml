@@ -1,0 +1,30 @@
+version: 2.1
+orbs:
+  aws-cloudformation: orbss/aws-cloudformation@0.1.6
+  aws-ecr: circleci/aws-ecr@6.14.0
+jobs:
+  test:
+    steps:
+      - checkout
+      - maven/test
+  publish:
+    steps:
+      - aws-ecr/build-and-push-image:
+          dockerfile: Dockerfile
+          repo: $REPO
+  initialize:
+    steps:
+      - checkout
+      - aws-cloudformation/deploy:
+          stack-name: sharedid-qa
+          template-file-path: cloudformation.yml
+          parameter-overrides:
+            - Certificate=
+            - ServiceName=SharedIdQA
+            - Image=
+            - HealthCheckPath=/healthcheck
+            - HostedZoneName=sharedid.org
+            - Subdomain=id-qa
+            - MinContainers=1
+            - MaxContainers=1
+            - AutoScalingTargetValue=100
