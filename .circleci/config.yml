@@ -2,10 +2,10 @@ version: 2.1
 orbs:
   aws-cloudformation: orbss/aws-cloudformation@0.1.6
   aws-ecr: circleci/aws-ecr@6.14.0
-jobs:
-  test:
-    steps:
-      - checkout
+  maven: circleci/maven@0.0.12
+workflows:
+  maven_test:
+    jobs:
       - maven/test
 #  publish:
 #    steps:
