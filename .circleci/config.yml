@@ -7,24 +7,24 @@ jobs:
     steps:
       - checkout
       - maven/test
-  publish:
-    steps:
-      - aws-ecr/build-and-push-image:
-          dockerfile: Dockerfile
-          repo: $REPO
-  initialize:
-    steps:
-      - checkout
-      - aws-cloudformation/deploy:
-          stack-name: sharedid-qa
-          template-file-path: cloudformation.yml
-          parameter-overrides:
-            - Certificate=
-            - ServiceName=SharedIdQA
-            - Image=
-            - HealthCheckPath=/healthcheck
-            - HostedZoneName=sharedid.org
-            - Subdomain=id-qa
-            - MinContainers=1
-            - MaxContainers=1
-            - AutoScalingTargetValue=100
+#  publish:
+#    steps:
+#      - aws-ecr/build-and-push-image:
+#          dockerfile: Dockerfile
+#          repo: $REPO
+#  initialize:
+#    steps:
+#      - checkout
+#      - aws-cloudformation/deploy:
+#          stack-name: sharedid-qa
+#          template-file-path: cloudformation.yml
+#          parameter-overrides:
+#            - Certificate=
+#            - ServiceName=SharedIdQA
+#            - Image=
+#            - HealthCheckPath=/healthcheck
+#            - HostedZoneName=sharedid.org
+#            - Subdomain=id-qa
+#            - MinContainers=1
+#            - MaxContainers=1
+#            - AutoScalingTargetValue=100
