@@ -17,8 +17,7 @@ jobs:
       - aws-cloudformation/deploy:
           stack-name: sharedid-repo
           template-file-path: cloudformation-repo.yml
-          parameter-overrides:
-            - RepoName=sharedid
+          parameter-overrides: RepoName=sharedid
 
 workflows:
   maven_test:
