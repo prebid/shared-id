@@ -11,9 +11,17 @@ jobs:
       - run: echo 'Hello world'
   publish:
     docker:
-      - image: circleci/python:2.7-stretch
+      - image: circleci/openjdk:11-jdk-stretch
     steps:
       - checkout
+      - run:
+          name: Install dependencies
+          command: |
+            apt-get -y -qq update
+            apt-get -y -qq install python3.4-dev
+            curl -O https://bootstrap.pypa.io/get-pip.py
+            python3.4 get-pip.py --user
+            pip install awscli --upgrade --user
       - aws-cloudformation/deploy:
           stack-name: sharedid-repo
           template-file-path: cloudformation-repo.yml
