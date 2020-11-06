@@ -24,8 +24,8 @@ workflows:
     jobs:
       - cloudformation/deploy:
           stack_name: sharedid-repo
-            template: cloudformation-repo.yml
-            args: --parameter-overrides="RepoName=sharedid"
+          template: cloudformation-repo.yml
+          args: --parameter-overrides="RepoName=sharedid"
 #        filters:
 #          branches:
 #            only: /master/
