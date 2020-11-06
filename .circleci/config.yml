@@ -13,7 +13,7 @@ jobs:
     executor: cloudformation/alpine
     steps:
       - cloudformation/deploy:
-          stack-name: sharedid-repo
+          stack_name: sharedid-repo
           template: cloudformation-repo.yml
           args: --parameter-overrides RepoName=sharedid
 
