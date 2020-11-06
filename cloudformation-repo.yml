@@ -10,6 +10,5 @@ Resources:
     Properties:
       RepositoryName: !Ref RepoName
 Outputs:
-  Repository:
-    Description: Repository
-    Value: !Ref Repository
+  Arn:
+    Value: !GetAtt Repository.Arn
