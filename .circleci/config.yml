@@ -1,6 +1,6 @@
 version: 2.1
 orbs:
-  aws-cloudformation: orbss/aws-cloudformation@0.1.6
+  cloudformation: frameio/cloudformation@0.17.3
 #  aws-ecr: circleci/aws-ecr@6.14.0
   maven: circleci/maven@1.0.3
 jobs:
@@ -10,12 +10,12 @@ jobs:
     steps:
       - run: echo 'Hello world'
   publish:
-    executor: aws-cloudformation/default
+    executor: cloudformation/alpine
     steps:
-      - aws-cloudformation/deploy:
+      - cloudformation/deploy:
           stack-name: sharedid-repo
-          template-file-path: cloudformation-repo.yml
-          parameter-overrides: RepoName=sharedid
+          template: cloudformation-repo.yml
+          args: --parameter-overrides RepoName=sharedid
 
 workflows:
   maven_test:
