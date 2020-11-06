@@ -11,7 +11,7 @@ jobs:
       - run: echo 'Hello world'
   publish:
     docker:
-      - image: circleci/openjdk:11-jdk-stretch
+      - image: circleci/python:2.7-stretch
     steps:
       - checkout
       - aws-cloudformation/deploy:
