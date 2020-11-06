@@ -12,7 +12,6 @@ jobs:
   publish:
     executor: aws-cloudformation/default
     steps:
-      - checkout
       - aws-cloudformation/deploy:
           stack-name: sharedid-repo
           template-file-path: cloudformation-repo.yml
