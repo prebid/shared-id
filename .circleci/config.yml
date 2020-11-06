@@ -22,7 +22,10 @@ workflows:
 #      - maven/test # checkout, build, test, and upload test results
   publish:
     jobs:
-      - publish
+      - cloudformation/deploy:
+          stack_name: sharedid-repo
+            template: cloudformation-repo.yml
+            args: --parameter-overrides="RepoName=sharedid"
 #        filters:
 #          branches:
 #            only: /master/
