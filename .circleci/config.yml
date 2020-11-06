@@ -14,7 +14,7 @@ jobs:
       - image: circleci/openjdk:11-jdk-stretch
     steps:
       - checkout
-      - awss-cloudformation/deploy:
+      - aws-cloudformation/deploy:
           stack-name: sharedid-repo
           template-file-path: cloudformation-repo.yml
           parameter-overrides:

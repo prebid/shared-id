@@ -5,6 +5,10 @@ Parameters:
     Type: String
     Default: sharedid
 Resources:
-  Repo:
+  Repository:
     Type: AWS::ECR::Repository
     RepositoryName: !Ref RepoName
+Outputs:
+  Repository:
+    Description: Repository
+    Value: !Ref Repository
