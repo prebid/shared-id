@@ -5,9 +5,13 @@ orbs:
   maven: circleci/maven@1.0.3
 jobs:
   build:
+    docker:
+      - image: circleci/openjdk:11-jdk-stretch
     steps:
       - run: echo 'Hello world'
   publish:
+    docker:
+      - image: circleci/openjdk:11-jdk-stretch
     steps:
       - checkout
       - awss-cloudformation/deploy:
