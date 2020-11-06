@@ -9,12 +9,6 @@ jobs:
       - image: circleci/openjdk:11-jdk-stretch
     steps:
       - run: echo 'Hello world'
-  publish:
-    steps:
-      - cloudformation/deploy:
-          stack_name: sharedid-repo
-          template: cloudformation-repo.yml
-          args: --parameter-overrides="RepoName=sharedid"
 
 workflows:
 #  maven_test:
