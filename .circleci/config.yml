@@ -1,12 +1,31 @@
 version: 2.1
 orbs:
-#  aws-cloudformation: orbss/aws-cloudformation@0.1.6
+  aws-cloudformation: orbss/aws-cloudformation@0.1.6
 #  aws-ecr: circleci/aws-ecr@6.14.0
   maven: circleci/maven@1.0.3
+jobs:
+  build:
+    steps:
+      - run: echo 'Hello world'
+  publish:
+    steps:
+      - checkout
+      - awss-cloudformation/deploy:
+          stack-name: sharedid-repo
+          template-file-path: cloudformation-repo.yml
+          parameter-overrides:
+            - RepoName=sharedid
+
 workflows:
   maven_test:
     jobs:
       - maven/test # checkout, build, test, and upload test results
+  publish:
+    jobs:
+      - publish
+#        filters:
+#          branches:
+#            only: /master/
 #  publish:
 #    steps:
 #      - aws-ecr/build-and-push-image:
@@ -17,7 +36,7 @@ workflows:
 #      - checkout
 #      - aws-cloudformation/deploy:
 #          stack-name: sharedid-qa
-#          template-file-path: cloudformation.yml
+#          template-file-path: cloudformation-cluster.yml
 #          parameter-overrides:
 #            - Certificate=
 #            - ServiceName=SharedIdQA

@@ -1,0 +1,10 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: Setup ECR repo for shared id
+Parameters:
+  RepoName:
+    Type: String
+    Default: sharedid
+Resources:
+  Repo:
+    Type: AWS::ECR::Repository
+    RepositoryName: !Ref RepoName
