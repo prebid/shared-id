@@ -10,17 +10,16 @@ jobs:
     steps:
       - run: echo 'Hello world'
   publish:
-    executor: cloudformation/alpine
     steps:
       - cloudformation/deploy:
           stack_name: sharedid-repo
           template: cloudformation-repo.yml
-          args: --parameter-overrides RepoName=sharedid
+          args: --parameter-overrides="RepoName=sharedid"
 
 workflows:
-  maven_test:
-    jobs:
-      - maven/test # checkout, build, test, and upload test results
+#  maven_test:
+#    jobs:
+#      - maven/test # checkout, build, test, and upload test results
   publish:
     jobs:
       - publish
