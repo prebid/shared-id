@@ -14,9 +14,10 @@ jobs:
       - image: circleci/openjdk:11-jdk-stretch
     steps:
       - checkout
-      - run: ./mvn package
-      - run: ./mvn docker:build
-      - run: ./mvn docker:push
+      - run: sudo apt-get install maven
+      - run: mvn package
+      - run: mvn docker:build
+      - run: mvn docker:push
 
 workflows:
 #  maven_test:
