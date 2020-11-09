@@ -20,18 +20,15 @@ jobs:
       - run: mvn docker:push
 
 workflows:
-#  maven_test:
-#    jobs:
-#      - maven/test # checkout, build, test, and upload test results
   publish:
     jobs:
-      - cloudformation/deploy:
-          stack_name: sharedid-repo
-          template: cloudformation-repo.yml
-          args: --parameter-overrides="RepoName=sharedid" --no-fail-on-empty-changeset
-      - publish:
-          requires:
-            - cloudformation/deploy
+#      - cloudformation/deploy:
+#          stack_name: sharedid-repo
+#          template: cloudformation-repo.yml
+#          args: --parameter-overrides="RepoName=sharedid" --no-fail-on-empty-changeset
+      - publish
+#          requires:
+#            - cloudformation/deploy
 #        filters:
 #          branches:
 #            only: /master/
