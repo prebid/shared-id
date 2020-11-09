@@ -223,7 +223,7 @@
           <images>
             <image>
               <alias>service</alias>
-              <name>shared-id:${project.version}</name>
+              <name>sharedid:${project.version}</name>
               <registry>888340278975.dkr.ecr.us-west-2.amazonaws.com</registry>
               <build>
                 <dockerFileDir>${project.basedir}</dockerFileDir>
