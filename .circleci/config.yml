@@ -14,9 +14,9 @@ jobs:
       - image: circleci/openjdk:11-jdk-stretch
     steps:
       - checkout
-      - ./mvnw package
-      - ./mvnw docker:build
-      - ./mvnw docker:push
+      - run: ./mvnw package
+      - run: ./mvnw docker:build
+      - run: ./mvnw docker:push
 
 workflows:
 #  maven_test:
