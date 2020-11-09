@@ -14,9 +14,9 @@ jobs:
       - image: circleci/openjdk:11-jdk-stretch
     steps:
       - checkout
-      - run: ./mvnw package
-      - run: ./mvnw docker:build
-      - run: ./mvnw docker:push
+      - run: ./mvn package
+      - run: ./mvn docker:build
+      - run: ./mvn docker:push
 
 workflows:
 #  maven_test:
@@ -28,7 +28,9 @@ workflows:
           stack_name: sharedid-repo
           template: cloudformation-repo.yml
           args: --parameter-overrides="RepoName=sharedid"
-      - publish
+      - publish:
+          requires:
+            - cloudformation/deploy
 #        filters:
 #          branches:
 #            only: /master/
