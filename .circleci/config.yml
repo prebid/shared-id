@@ -11,7 +11,7 @@ jobs:
       - run: echo 'Hello world'
   publish:
     docker:
-      - image: circleci/openjdk:11-jdk-stretch
+      - image: cimg/openjdk:11.0
     steps:
       - checkout
       - run: sudo apt-get update && sudo apt-get install maven
