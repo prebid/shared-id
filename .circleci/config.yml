@@ -12,11 +12,10 @@ jobs:
   publish:
     docker:
       - image: circleci/openjdk:11-jdk-stretch
+    machine: true
     steps:
       - checkout
       - run: sudo apt-get update && sudo apt-get install maven
-      - setup_remote_docker:
-          version: 19.03.13
       - run: mvn package
       - run: mvn docker:build
       - run: mvn docker:push
