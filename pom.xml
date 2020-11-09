@@ -223,18 +223,12 @@
           <images>
             <image>
               <alias>service</alias>
-              <name>shared-id-endpoint:${project.version}</name>
-              <registry>747429369124.dkr.ecr.us-east-1.amazonaws.com</registry>
+              <name>shared-id:${project.version}</name>
+              <registry>888340278975.dkr.ecr.us-west-2.amazonaws.com</registry>
               <build>
                 <dockerFileDir>${project.basedir}</dockerFileDir>
                 <filter>${*}</filter>
               </build>
-<!--              <authConfig>-->
-<!--                <push>-->
-<!--                  <username>{{aws access key id}}</username>-->
-<!--                  <password>{{ aws secret }}</password>-->
-<!--                </push>-->
-<!--              </authConfig>-->
             </image>
           </images>
         </configuration>

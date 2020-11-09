@@ -9,6 +9,14 @@ jobs:
       - image: circleci/openjdk:11-jdk-stretch
     steps:
       - run: echo 'Hello world'
+  publish:
+    docker:
+      - image: circleci/openjdk:11-jdk-stretch
+    steps:
+      - checkout
+      - ./mvnw package
+      - ./mvnw docker:build
+      - ./mvnw docker:push
 
 workflows:
 #  maven_test:
@@ -20,6 +28,7 @@ workflows:
           stack_name: sharedid-repo
           template: cloudformation-repo.yml
           args: --parameter-overrides="RepoName=sharedid"
+      - publish
 #        filters:
 #          branches:
 #            only: /master/
