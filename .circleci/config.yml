@@ -28,7 +28,7 @@ workflows:
           stack_name: sharedid-repo
           template: cloudformation-repo.yml
           args: --parameter-overrides="RepoName=sharedid" --no-fail-on-empty-changeset
-      - publish
+      - publish:
           requires:
             - cloudformation/deploy
       - cloudformation/deploy:
