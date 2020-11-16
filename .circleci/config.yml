@@ -25,13 +25,15 @@ workflows:
   publish:
     jobs:
       - cloudformation/deploy:
+          name: deploy-repo
           stack_name: sharedid-repo
           template: cloudformation-repo.yml
           args: --parameter-overrides="RepoName=sharedid" --no-fail-on-empty-changeset
       - publish:
           requires:
-            - cloudformation/deploy
+            - deploy-repo
       - cloudformation/deploy:
+          name: deploy-cluster
           stack_name: sharedid-cluster-dev
           template: cloudformation-cluster.yml
           args: --parameter-overrides="Image=888340278975.dkr.ecr.us-west-2.amazonaws.com/sharedid:1.0.0-SNAPSHOT,ServiceName=sharedid-dev,HealthCheckPath=/health" --no-fail-on-empty-changeset
