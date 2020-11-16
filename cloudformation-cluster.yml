@@ -261,7 +261,7 @@ Resources:
         ScaleOutCooldown: 10
         # Keep things at or lower than 50% CPU utilization, for example
         TargetValue: !Ref AutoScalingTargetValue
-Outputs:
+#Outputs:
 #  Endpoint:
 #    Description: Endpoint
 #    Value: !Join ['', ['https://', !Ref DNSRecord]]
