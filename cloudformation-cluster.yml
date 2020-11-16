@@ -7,10 +7,10 @@ Parameters:
     Type: AWS::EC2::Subnet::Id
   SubnetB:
     Type: AWS::EC2::Subnet::Id
-#  Certificate:
-#    Type: String
-#    # Update with the certificate ARN from Certificate Manager, which must exist in the same region.
-#    Default: 'arn:aws:acm:region:123456789012:certificate/00000000-0000-0000-0000-000000000000'
+  Certificate:
+    Type: String
+    # Update with the certificate ARN from Certificate Manager, which must exist in the same region.
+    Default: 'arn:aws:acm:region:123456789012:certificate/00000000-0000-0000-0000-000000000000'
   Image:
     Type: String
     # Update with the Docker image. "You can use images in the Docker Hub registry or specify other repositories (repository-url/image:tag)."
