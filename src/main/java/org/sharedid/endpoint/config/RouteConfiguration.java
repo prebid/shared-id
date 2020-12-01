@@ -31,6 +31,9 @@ public class RouteConfiguration {
     @Value("${templates.opt-in}")
     private String optInTemplate;
 
+    @Value("${templates.iframe}")
+    private String iframeSync;
+
     @Bean
     public HandlerRegistry handlerRegistry(List<Handler<RoutingContext>> handlers) {
         return new HandlerRegistry(handlers);
@@ -120,6 +123,11 @@ public class RouteConfiguration {
                 .handler(CorsHandler.create(".*.").allowCredentials(true))
                 .handler(handlerRegistry.get(ProcessOptInHandler.class))
                 .handler(TemplateHandler.create(templateEngine, optInTemplate, "text/html"));
+
+        router.get("/iframe/optout")
+                .handler(handlerRegistry.get(AddDefaultHeadersHandler.class))
+                .handler(CorsHandler.create(".*.").allowCredentials(true))
+                .handler(TemplateHandler.create(templateEngine, iframeSync, "text/html"));
 
         router.get("/health")
                 .handler(new RespondHealthCheckHandler());

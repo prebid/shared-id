@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en">
+<body>
+<script type="application/javascript">
+const OPT_OUT_VALUE = '00000000000000000000000000';
+const prefix = 'SharedId.org'
+
+function onLoad(fn) {
+  if (document.attachEvent ? document.readyState === "complete" : document.readyState !== "loading") {
+    fn();
+  } else {
+    document.addEventListener('DOMContentLoaded', fn);
+  }
+}
+
+function storageAccessAPISupported() {
+  return (
+    'hasStorageAccess' in document &&
+    'requestStorageAccess' in document
+  );
+}
+
+function onReady() {
+  console.info('Iframe loaded');
+  window.addEventListener('message', onMessage);
+}
+
+function onMessage(event) {
+  console.info('SharedID Received message :' + event + ' with event data ' + event.data);
+  if (event.data == 'optout-request') {
+    if (!storageAccessAPISupported()) {
+      console.info('STORAGE :Storage Access API not supported');
+      return;
+    }
+    document.requestStorageAccess()
+      .then(function () {
+        console.info('STORAGE : Storage API Access granted.');
+        setCookie('sharedid', "00000000000000000000000000");
+        return;
+      }, function () {
+        console.warn('STORAGE :Storage API Access denied.');
+      });
+  } else {
+    console.info('Received other messages :' + event + ' with event data ' + event.data);
+  }
+}
+
+function setCookie(name, value) {
+  document.cookie = name + "=" + value + ";" + ";path=/";
+  console.info('Setting optout cookies');
+}
+
+onLoad(onReady)
+
+</script>
+</body>
+</html>
