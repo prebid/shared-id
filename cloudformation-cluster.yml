@@ -1,5 +1,5 @@
 AWSTemplateFormatVersion: 2010-09-09
-Description: An example CloudFormation template for Fargate.
+Description: Fargate CloudFormation template for SharedID.
 Parameters:
   VPC:
     Type: AWS::EC2::VPC::Id
@@ -18,7 +18,7 @@ Parameters:
   ServiceName:
     Type: String
     # update with the name of the service
-    Default: MyService
+    Default: SharedID
   ContainerPort:
     Type: Number
     Default: 80
@@ -27,7 +27,7 @@ Parameters:
     Default: 443
   HealthCheckPath:
     Type: String
-    Default: /healthcheck
+    Default: /health
 #  HostedZoneName:
 #    Type: String
 #    Default: company.com
