@@ -34,9 +34,9 @@ workflows:
 #            - deploy-repo
       - cloudformation/deploy:
           name: deploy-cluster
-          stack_name: sharedid-cluster-dev6
+          stack_name: SharedID-staging
           template: cloudformation-cluster.yml
-          args: --no-fail-on-empty-changeset --parameter-overrides Certificate=arn:aws:acm:us-west-2:888340278975:certificate/f2c4fcd1-2061-41c0-a0f5-c14124cd1b3b ServiceName=sharedid-dev
+          args: --no-fail-on-empty-changeset --parameter-overrides Certificate=arn:aws:acm:us-west-2:888340278975:certificate/f2c4fcd1-2061-41c0-a0f5-c14124cd1b3b ServiceName=SharedID-staging
           # requires: ----ADD ME!!!!----
 #        filters:
 #          branches:
