@@ -1,5 +1,5 @@
 AWSTemplateFormatVersion: 2010-09-09
-Description: Fargate CloudFormation template for SharedID.
+Description: Setup Fargate cluster for SharedID.
 Parameters:
   Certificate:
     Type: String

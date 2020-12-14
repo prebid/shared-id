@@ -1,9 +1,9 @@
 AWSTemplateFormatVersion: 2010-09-09
-Description: Setup ECR repo for shared id
+Description: Setup ECR repo for SharedID.
 Parameters:
   RepoName:
     Type: String
-    Default: sharedid
+    Default: SharedID
 Resources:
   Repository:
     Type: AWS::ECR::Repository
