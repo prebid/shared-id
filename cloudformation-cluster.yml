@@ -3,13 +3,10 @@ Description: Fargate CloudFormation template for SharedID.
 Parameters:
   VPC:
     Type: AWS::EC2::VPC::Id
-    default: vpc-b5dd93cd
   SubnetA:
     Type: AWS::EC2::Subnet::Id
-    default: subnet-0ace1572
   SubnetB:
     Type: AWS::EC2::Subnet::Id
-    default: subnet-f29d59b8
   Certificate:
     Type: String
     # Update with the certificate ARN from Certificate Manager, which must exist in the same region.
