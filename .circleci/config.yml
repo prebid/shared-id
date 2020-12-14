@@ -36,7 +36,7 @@ workflows:
           name: deploy-cluster
           stack_name: sharedid-cluster-dev
           template: cloudformation-cluster.yml
-          args: --no-fail-on-empty-changeset --parameter-overrides VPC=vpc-b5dd93cd SubnetA=subnet-0ace1572 SubnetB=subnet-0ace1572 ServiceName=sharedid-dev
+          args: --no-fail-on-empty-changeset --parameter-overrides AutoScalingTargetValue=50 Certificate=arn:aws:acm:us-west-2:888340278975:certificate/f2c4fcd1-2061-41c0-a0f5-c14124cd1b3b ContainerPort=80 HealthCheckPath=/health Image=888340278975.dkr.ecr.us-west-2.amazonaws.com/sharedid:1.0.0 LoadBalancerPort=443 MaxContainers=10 MinContainers=2 ServiceName=sharedid-dev SubnetA=subnet-0ace1572 SubnetB=subnet-0ace1572 VPC=vpc-b5dd93cd
           # requires: ----ADD ME!!!!----
 #        filters:
 #          branches:
