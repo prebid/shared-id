@@ -1,0 +1,64 @@
+version: 2.1
+orbs:
+  cloudformation: frameio/cloudformation@0.17.3
+#  aws-ecr: circleci/aws-ecr@6.14.0
+  maven: circleci/maven@1.0.3
+jobs:
+  build:
+    docker:
+      - image: circleci/openjdk:11-jdk-stretch
+    steps:
+      - run: echo 'Hello world'
+  publish:
+    docker:
+      - image: cimg/openjdk:11.0
+    steps:
+      - checkout
+      - run: sudo apt-get update && sudo apt-get install maven
+      - setup_remote_docker:
+          version: 19.03.13
+      - run: mvn package
+      - run: mvn docker:build
+      - run: mvn docker:push
+
+workflows:
+  deploy:
+    jobs:
+#      - cloudformation/deploy:
+#          name: deploy-repo
+#          stack_name: SharedID-repo
+#          template: ./.cloudformation/repo.yml
+#          args: --no-fail-on-empty-changeset --parameter-overrides="RepoName=SharedID"
+#      - publish:
+#          requires:
+#            - deploy-repo
+      - cloudformation/deploy:
+          name: deploy-cluster
+          stack_name: SharedID-staging-rc1
+          template: ./.cloudformation/cluster.yml
+          args: --capabilities CAPABILITY_NAMED_IAM --no-fail-on-empty-changeset --parameter-overrides Certificate=arn:aws:acm:us-west-2:888340278975:certificate/f2c4fcd1-2061-41c0-a0f5-c14124cd1b3b ServiceName=SharedID-staging
+          # requires: ----ADD ME!!!!----
+#        filters:
+#          branches:
+#            only: /master/
+#  publish:
+#    steps:
+#      - aws-ecr/build-and-push-image:
+#          dockerfile: Dockerfile
+#          repo: $REPO
+#  initialize:
+#    steps:
+#      - checkout
+#      - aws-cloudformation/deploy:
+#          stack-name: sharedid-qa
+#          template-file-path: cloudformation-cluster.yml
+#          parameter-overrides:
+#            - Certificate=
+#            - ServiceName=SharedIdQA
+#            - Image=
+#            - HealthCheckPath=/healthcheck
+#            - HostedZoneName=sharedid.org
+#            - Subdomain=id-qa
+#            - MinContainers=1
+#            - MaxContainers=1
+#            - AutoScalingTargetValue=100
