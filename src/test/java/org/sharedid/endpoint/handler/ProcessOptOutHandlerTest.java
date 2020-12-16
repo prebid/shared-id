@@ -52,6 +52,7 @@ public class ProcessOptOutHandlerTest {
                 "00",
                 123L,
                 true,
+                true,
                 metricRegistry);
     }
 

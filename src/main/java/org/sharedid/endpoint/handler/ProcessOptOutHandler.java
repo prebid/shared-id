@@ -23,12 +23,13 @@ public class ProcessOptOutHandler implements Handler<RoutingContext> {
             "shared-id.handler.optout.redirect_parameter_exists";
 
     public static final String PARAM_REDIRECT = "redir";
-    
+
     private String sharedIdCookieName;
     private String auditCookieName;
     private String sharedIdOptOutValue;
     private Long sharedIdOptOutTtl;
     private Boolean isSecureCookiesEnabled;
+    private Boolean isHttpOnlyCookiesEnabled;
 
     private Meter optOutRedirectParameterExists;
 
@@ -38,12 +39,14 @@ public class ProcessOptOutHandler implements Handler<RoutingContext> {
                                 @Value("${cookie.shared-id.opt-out-value}") String sharedIdOptOutValue,
                                 @Value("${cookie.shared-id.opt-out-ttl}") Long sharedIdOptOutTtl,
                                 @Value("${cookies.secure}") Boolean isSecureCookiesEnabled,
+                                @Value("${cookies.httpOnly:true}") Boolean isHttpOnlyCookiesEnabled,
                                 MetricRegistry metricRegistry) {
         this.sharedIdCookieName = sharedIdCookieName;
         this.auditCookieName = auditCookieName;
         this.sharedIdOptOutValue = sharedIdOptOutValue;
         this.sharedIdOptOutTtl = sharedIdOptOutTtl;
         this.isSecureCookiesEnabled = isSecureCookiesEnabled;
+        this.isHttpOnlyCookiesEnabled = isHttpOnlyCookiesEnabled;
 
         this.optOutRedirectParameterExists = metricRegistry.meter(METRIC_OPT_OUT_REDIRECT_PARAMETER_EXISTS);
     }
@@ -61,6 +64,7 @@ public class ProcessOptOutHandler implements Handler<RoutingContext> {
                 ExtraHeadersCookie.fromCookie(Cookie.cookie(auditCookieName, ""));
         auditCookie.setMaxAge(0);
         auditCookie.setSecure(isSecure);
+        auditCookie.setHttpOnly(isHttpOnlyCookiesEnabled);
         response.addCookie(auditCookie);
 
         //set shared id cookie to opted out value
@@ -68,6 +72,7 @@ public class ProcessOptOutHandler implements Handler<RoutingContext> {
                 ExtraHeadersCookie.fromCookie(Cookie.cookie(sharedIdCookieName, sharedIdOptOutValue));
         optedOutCookie.setMaxAge(sharedIdOptOutTtl);
         optedOutCookie.setSecure(isSecure);
+        optedOutCookie.setHttpOnly(isHttpOnlyCookiesEnabled);
         response.addCookie(optedOutCookie);
 
         String redirectParam = routingContext.request().getParam(PARAM_REDIRECT);

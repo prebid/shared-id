@@ -49,7 +49,8 @@ public class SetSharedIdCookieHandlerTest {
                 "sharedid",
                 123L,
                 true,
-                metricRegistry);
+                metricRegistry,
+                true);
     }
 
     @Test

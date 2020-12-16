@@ -41,7 +41,8 @@ public class CheckOptOutHandlerTest {
                 "00",
                 "sharedid",
                 123L,
-                false);
+                false,
+                true);
     }
 
     @Test

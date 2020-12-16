@@ -66,6 +66,7 @@ public class SetAuditCookieHandlerTest {
                 "audit",
                 123L,
                 "123",
+                true,
                 true);
     }
 

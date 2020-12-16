@@ -20,16 +20,19 @@ public class CheckOptOutHandler implements Handler<RoutingContext> {
     private String sharedIdCookieName;
     private Long sharedIdOptOutTtl;
     private Boolean isSecureCookiesEnabled;
+    private Boolean isHttpOnlyCookiesEnabled;
 
     @Autowired
     public CheckOptOutHandler(@Value("${cookie.shared-id.opt-out-value}") String optOutCookieValue,
                               @Value("${cookie.shared-id.name}") String sharedIdCookieName,
                               @Value("${cookie.shared-id.opt-out-ttl}") Long sharedIdOptOutTtl,
-                              @Value("${cookies.secure}") Boolean isSecureCookiesEnabled) {
+                              @Value("${cookies.secure}") Boolean isSecureCookiesEnabled,
+                              @Value("${cookies.httpOnly:true}") Boolean isHttpOnlyCookiesEnabled) {
         this.optOutCookieValue = optOutCookieValue;
         this.sharedIdCookieName = sharedIdCookieName;
         this.sharedIdOptOutTtl = sharedIdOptOutTtl;
         this.isSecureCookiesEnabled = isSecureCookiesEnabled;
+        this.isHttpOnlyCookiesEnabled = isHttpOnlyCookiesEnabled;
     }
 
     @Override
@@ -55,7 +58,7 @@ public class CheckOptOutHandler implements Handler<RoutingContext> {
         Cookie responseCookie = ExtraHeadersCookie.fromCookie(Cookie.cookie(sharedIdCookieName, optOutCookieValue));
         responseCookie.setMaxAge(sharedIdOptOutTtl);
         responseCookie.setSecure(isSecureCookiesEnabled);
-
+        responseCookie.setHttpOnly(isHttpOnlyCookiesEnabled);
         routingContext.response().addCookie(responseCookie);
     }
 }

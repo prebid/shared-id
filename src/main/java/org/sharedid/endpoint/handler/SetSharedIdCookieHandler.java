@@ -24,6 +24,7 @@ public class SetSharedIdCookieHandler implements Handler<RoutingContext> {
     private String cookieName;
     private long cookieTtl;
     private Boolean isSecureCookiesEnabled;
+    private Boolean isHttpOnlyCookiesEnabled;
 
     private Meter newUserIdMeter;
     private Meter existingUserIdMeter;
@@ -33,10 +34,12 @@ public class SetSharedIdCookieHandler implements Handler<RoutingContext> {
     public SetSharedIdCookieHandler(@Value("${cookie.shared-id.name}") String cookieName,
                                     @Value("${cookie.shared-id.ttl}") long cookieTtl,
                                     @Value("${cookies.secure}") Boolean isSecureCookiesEnabled,
-                                    MetricRegistry metricRegistry) {
+                                    MetricRegistry metricRegistry,
+                                    @Value("${cookies.httpOnly:true}") Boolean isHttpOnlyCookiesEnabled) {
         this.cookieName = cookieName;
         this.cookieTtl = cookieTtl;
         this.isSecureCookiesEnabled = isSecureCookiesEnabled;
+        this.isHttpOnlyCookiesEnabled = isHttpOnlyCookiesEnabled;
 
         this.newUserIdMeter = metricRegistry.meter(METRIC_NEW_USER_ID);
         this.existingUserIdMeter = metricRegistry.meter(METRIC_EXISTING_USER_ID);
@@ -77,6 +80,7 @@ public class SetSharedIdCookieHandler implements Handler<RoutingContext> {
         Cookie cookie = ExtraHeadersCookie.fromCookie(Cookie.cookie(cookieName, userId));
         cookie.setMaxAge(cookieTtl);
         cookie.setSecure(isSecure);
+        cookie.setHttpOnly(isHttpOnlyCookiesEnabled);
 
         routingContext.addCookie(cookie);
 
