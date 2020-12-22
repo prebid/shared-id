@@ -71,8 +71,8 @@ jobs:
           command: 'docker:push'
 
 workflows:
- 'deploy to staging':
-    jobs:
+  jobs:
+    'deploy to staging':
 #      - cloudformation/deploy:
 #          name: 'Deploy to ECR'
 #          stack_name: SharedID-repo
@@ -87,8 +87,7 @@ workflows:
           <<: *main_only
 #         requires:
 #           - 'Deploy to ECR'
-  'deploy to production':
-    jobs:
+    'deploy to production':
       - start-deploy:
           name: << pipeline.parameters.job-name-production-approval >>
           type: approval
