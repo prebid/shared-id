@@ -8,9 +8,6 @@ Parameters:
   Image:
     Type: String
     Default: 888340278975.dkr.ecr.us-west-2.amazonaws.com/sharedid:1.0.0
-  ServiceName:
-    Type: String
-    Default: !Join ['', [!Ref 'AWS::StackName']]
   ContainerPort:
     Type: Number
     Default: 80
@@ -145,14 +142,14 @@ Resources:
   Cluster:
     Type: AWS::ECS::Cluster
     Properties:
-      ClusterName: !Join ['', [!Ref ServiceName, Cluster]]
+      ClusterName: !Join ['', [!Ref , Cluster]]
   TaskDefinition:
     Type: AWS::ECS::TaskDefinition
     # Makes sure the log group is created before it is used.
     DependsOn: LogGroup
     Properties:
       # Name of the task definition. Subsequent versions of the task definition are grouped together under this name.
-      Family: !Join ['', [!Ref ServiceName, TaskDefinition]]
+      Family: !Join ['', [!Ref AWS::StackName, TaskDefinition]]
       # awsvpc is required for Fargate
       NetworkMode: awsvpc
       RequiresCompatibilities:
@@ -176,7 +173,7 @@ Resources:
       # "The Amazon Resource Name (ARN) of an AWS Identity and Access Management (IAM) role that grants containers in the task permission to call AWS APIs on your behalf."
       TaskRoleArn: !Ref TaskRole
       ContainerDefinitions:
-        - Name: !Ref ServiceName
+        - Name: !Ref AWS::StackName
           Image: !Ref Image
           PortMappings:
             - ContainerPort: !Ref ContainerPort
@@ -191,7 +188,7 @@ Resources:
   ExecutionRole:
     Type: AWS::IAM::Role
     Properties:
-      RoleName: !Join ['', [!Ref ServiceName, ExecutionRole]]
+      RoleName: !Join ['', [!Ref AWS::StackName, ExecutionRole]]
       AssumeRolePolicyDocument:
         Statement:
           - Effect: Allow
@@ -204,7 +201,7 @@ Resources:
   TaskRole:
     Type: AWS::IAM::Role
     Properties:
-      RoleName: !Join ['', [!Ref ServiceName, TaskRole]]
+      RoleName: !Join ['', [!Ref AWS::StackName, TaskRole]]
       AssumeRolePolicyDocument:
         Statement:
           - Effect: Allow
@@ -219,7 +216,7 @@ Resources:
   AutoScalingRole:
     Type: AWS::IAM::Role
     Properties:
-      RoleName: !Join ['', [!Ref ServiceName, AutoScalingRole]]
+      RoleName: !Join ['', [!Ref AWS::StackName, AutoScalingRole]]
       AssumeRolePolicyDocument:
         Statement:
           - Effect: Allow
@@ -231,7 +228,7 @@ Resources:
   ContainerSecurityGroup:
     Type: AWS::EC2::SecurityGroup
     Properties:
-      GroupDescription: !Join ['', [!Ref ServiceName, ContainerSecurityGroup]]
+      GroupDescription: !Join ['', [!Ref AWS::StackName, ContainerSecurityGroup]]
       VpcId: !Ref VPC
       SecurityGroupIngress:
         - IpProtocol: tcp
@@ -241,7 +238,7 @@ Resources:
   LoadBalancerSecurityGroup:
     Type: AWS::EC2::SecurityGroup
     Properties:
-      GroupDescription: !Join ['', [!Ref ServiceName, LoadBalancerSecurityGroup]]
+      GroupDescription: !Join ['', [!Ref AWS::StackName, LoadBalancerSecurityGroup]]
       VpcId: !Ref VPC
       SecurityGroupIngress:
         - IpProtocol: tcp
@@ -254,7 +251,7 @@ Resources:
     DependsOn:
       - ListenerHTTPS
     Properties:
-      ServiceName: !Ref ServiceName
+      ServiceName: !Ref AWS::StackName
       Cluster: !Ref Cluster
       TaskDefinition: !Ref TaskDefinition
       DeploymentConfiguration:
@@ -274,7 +271,7 @@ Resources:
           SecurityGroups:
             - !Ref ContainerSecurityGroup
       LoadBalancers:
-        - ContainerName: !Ref ServiceName
+        - ContainerName: !Ref AWS::StackName
           ContainerPort: !Ref ContainerPort
           TargetGroupArn: !Ref TargetGroup
   TargetGroup:
@@ -286,7 +283,7 @@ Resources:
       HealthCheckTimeoutSeconds: 5
       UnhealthyThresholdCount: 2
       HealthyThresholdCount: 2
-      Name: !Join ['', [!Ref ServiceName, TargetGroup]]
+      Name: !Join ['', [!Ref AWS::StackName, TargetGroup]]
       Port: !Ref ContainerPort
       Protocol: HTTP
       TargetGroupAttributes:
@@ -312,7 +309,7 @@ Resources:
         # this is the default, but is specified here in case it needs to be changed
         - Key: idle_timeout.timeout_seconds
           Value: 60
-      Name: !Join ['', [!Ref ServiceName, LoadBalancer]]
+      Name: !Join ['', [!Ref AWS::StackName, LoadBalancer]]
       # "internal" is also an option
       Scheme: internet-facing
       SecurityGroups:
@@ -332,7 +329,7 @@ Resources:
   LogGroup:
     Type: AWS::Logs::LogGroup
     Properties:
-      LogGroupName: !Join ['', [/ecs/, !Ref ServiceName, TaskDefinition]]
+      LogGroupName: !Join ['', [/ecs/, !Ref AWS::StackName, TaskDefinition]]
   AutoScalingTarget:
     Type: AWS::ApplicationAutoScaling::ScalableTarget
     Properties:
@@ -346,7 +343,7 @@ Resources:
   AutoScalingPolicy:
     Type: AWS::ApplicationAutoScaling::ScalingPolicy
     Properties:
-      PolicyName: !Join ['', [!Ref ServiceName, AutoScalingPolicy]]
+      PolicyName: !Join ['', [!Ref AWS::StackName, AutoScalingPolicy]]
       PolicyType: TargetTrackingScaling
       ScalingTargetId: !Ref AutoScalingTarget
       TargetTrackingScalingPolicyConfiguration:
