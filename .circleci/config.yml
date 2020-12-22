@@ -34,7 +34,7 @@ jobs:
       - maven/test:
           command: 'docker:push'
 
-  deploy_to_staging:
+  staging:
     executor: docker-executor
     steps:
       - cloudformation/deploy:
@@ -42,7 +42,7 @@ jobs:
           template: ./.cloudformation/cluster.yml
           args: --capabilities CAPABILITY_NAMED_IAM --no-fail-on-empty-changeset --parameter-overrides Certificate=arn:aws:acm:us-west-2:888340278975:certificate/f2c4fcd1-2061-41c0-a0f5-c14124cd1b3b
 
-  deploy_to_production:
+  production:
     executor: docker-executor
     steps:
       - cloudformation/deploy:
@@ -53,11 +53,12 @@ jobs:
 workflows:
   deploy:
     jobs:
-      - deploy_to_staging
+      - checkout
+      - staging
       - hold:
           type: approval
           requires:
-            - deploy_to_staging
-      - deploy_to_production:
+            - staging
+      - production:
           requires:
             - hold
