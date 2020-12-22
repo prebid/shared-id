@@ -1,25 +1,47 @@
 version: 2.1
+
 orbs:
   cloudformation: frameio/cloudformation@0.17.3
 #  aws-ecr: circleci/aws-ecr@6.14.0
-  maven: circleci/maven@1.0.3
-jobs:
-  build:
+  maven: circleci/maven@1.0.3 # https://circleci.com/developer/orbs/orb/circleci/maven
+
+# use the same executor for all the jobs;
+executors:
+  docker-executor:
     docker:
       - image: circleci/openjdk:11-jdk-stretch
+#     - image: cimg/openjdk:11.0
+
+jobs:
+  build:
+    executor: docker-executor
     steps:
-      - run: echo 'Hello world'
+      - maven/test:
+          command: 'build'
+
+  unit_test:
+    executor: docker-executor
+    steps:
+      - maven/test # checkout, build, test, and upload test results
+
   publish:
-    docker:
-      - image: cimg/openjdk:11.0
+    executor: docker-executor
     steps:
-      - checkout
-      - run: sudo apt-get update && sudo apt-get install maven
-      - setup_remote_docker:
-          version: 19.03.13
-      - run: mvn package
-      - run: mvn docker:build
-      - run: mvn docker:push
+      - maven/test:
+          command: 'package'
+      - maven/test:
+          command: 'docker:build'
+      - maven/test:
+          command: 'docker:push'
+
+  deploy_to_staging:
+    executor: docker-executor
+    steps:
+      - cloudformation/deploy:
+          name: deploy-staging-cluster
+          stack_name: SharedID-staging-1
+          template: ./.cloudformation/cluster.yml
+          args: --capabilities CAPABILITY_NAMED_IAM --no-fail-on-empty-changeset --parameter-overrides Certificate=arn:aws:acm:us-west-2:888340278975:certificate/f2c4fcd1-2061-41c0-a0f5-c14124cd1b3b
 
 workflows:
   deploy:
@@ -32,33 +54,19 @@ workflows:
 #      - publish:
 #          requires:
 #            - deploy-repo
+      - deploy_to_staging:
+#         requires:
+#         filters:
+#           branches:
+#             only: /master/
+      - hold:
+          type: approval
+          requires:
+            - deploy_to_staging
       - cloudformation/deploy:
-          name: deploy-cluster
-          stack_name: SharedID-staging-rc1
+          name: deploy-production-cluster
+          stack_name: SharedID-production-1
           template: ./.cloudformation/cluster.yml
-          args: --capabilities CAPABILITY_NAMED_IAM --no-fail-on-empty-changeset --parameter-overrides Certificate=arn:aws:acm:us-west-2:888340278975:certificate/f2c4fcd1-2061-41c0-a0f5-c14124cd1b3b ServiceName=SharedID-staging
-          # requires: ----ADD ME!!!!----
-#        filters:
-#          branches:
-#            only: /master/
-#  publish:
-#    steps:
-#      - aws-ecr/build-and-push-image:
-#          dockerfile: Dockerfile
-#          repo: $REPO
-#  initialize:
-#    steps:
-#      - checkout
-#      - aws-cloudformation/deploy:
-#          stack-name: sharedid-qa
-#          template-file-path: cloudformation-cluster.yml
-#          parameter-overrides:
-#            - Certificate=
-#            - ServiceName=SharedIdQA
-#            - Image=
-#            - HealthCheckPath=/healthcheck
-#            - HostedZoneName=sharedid.org
-#            - Subdomain=id-qa
-#            - MinContainers=1
-#            - MaxContainers=1
-#            - AutoScalingTargetValue=100
+          args: --capabilities CAPABILITY_NAMED_IAM --no-fail-on-empty-changeset --parameter-overrides Certificate=arn:aws:acm:us-west-2:888340278975:certificate/f2c4fcd1-2061-41c0-a0f5-c14124cd1b3b
+          requires:
+            - hold
