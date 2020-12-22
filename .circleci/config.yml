@@ -34,31 +34,22 @@ jobs:
       - maven/test:
           command: 'docker:push'
 
-  staging:
-    executor: docker-executor
-    steps:
-      - checkout
-      - cloudformation/deploy:
-          stack_name: SharedID-staging-1
-          template: ./.cloudformation/cluster.yml
-          args: --capabilities CAPABILITY_NAMED_IAM --no-fail-on-empty-changeset --parameter-overrides Certificate=arn:aws:acm:us-west-2:888340278975:certificate/f2c4fcd1-2061-41c0-a0f5-c14124cd1b3b
-
-  production:
-    executor: docker-executor
-    steps:
-      - cloudformation/deploy:
-          stack_name: SharedID-production-1
-          template: ./.cloudformation/cluster.yml
-          args: --capabilities CAPABILITY_NAMED_IAM --no-fail-on-empty-changeset --parameter-overrides Certificate=arn:aws:acm:us-west-2:888340278975:certificate/f2c4fcd1-2061-41c0-a0f5-c14124cd1b3b
-
 workflows:
   deploy:
     jobs:
-      - staging
+      - cloudformation/deploy:
+          name: 'deploy to staging'
+          stack_name: SharedID-staging-1
+          template: ./.cloudformation/cluster.yml
+          args: --capabilities CAPABILITY_NAMED_IAM --no-fail-on-empty-changeset --parameter-overrides Certificate=arn:aws:acm:us-west-2:888340278975:certificate/f2c4fcd1-2061-41c0-a0f5-c14124cd1b3b
       - hold:
           type: approval
           requires:
-            - staging
-      - production:
+            - 'deploy to staging'
+      - cloudformation/deploy:
+          name: 'deploy to production'
+          stack_name: SharedID-production-1
+          template: ./.cloudformation/cluster.yml
+          args: --capabilities CAPABILITY_NAMED_IAM --no-fail-on-empty-changeset --parameter-overrides Certificate=arn:aws:acm:us-west-2:888340278975:certificate/f2c4fcd1-2061-41c0-a0f5-c14124cd1b3b
           requires:
             - hold
