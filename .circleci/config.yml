@@ -5,18 +5,34 @@ orbs:
 #  aws-ecr: circleci/aws-ecr@6.14.0
   maven: circleci/maven@1.0.3 # https://circleci.com/developer/orbs/orb/circleci/maven
 
-# use the same executor for all the jobs;
-executors:
-  docker-executor:
-    docker:
-      - image: cimg/openjdk:11.0
-
+# Main Only Branch filter
+# https://discuss.circleci.com/t/can-you-filter-on-a-workflow-level/30624/5
 main_only: &main_only
   filters:
     branches:
       only:
         - main
         - 'add-environments'
+
+parameters:
+  project-name:
+    type: string
+    default: 'SharedID'
+  cluster-template:
+    type: string
+    default: './.cloudformation/cluster.yml'
+  job-name-deploy-staging:
+    type: string
+    default: 'Deploy to Staging'
+  job-name-production-approval:
+    type: string
+    default: 'Go to Production?'
+
+# Global defined executor for all the jobs
+executors:
+  docker-executor:
+    docker:
+      - image: cimg/openjdk:11.0
 
 # Reusable Jobs
 # @TODO: not used right now, but should be tested to ensure that they work and do what is expected; e.g. build, test, & publish
@@ -52,9 +68,9 @@ workflows:
 #          template: ./.cloudformation/repo.yml
 #          args: --no-fail-on-empty-changeset --parameter-overrides="RepoName=SharedID"
       - cloudformation/deploy:
-          name: 'Deploy to Staging'
-          stack_name: SharedID-staging-1
-          template: ./.cloudformation/cluster.yml
+          name: << pipeline.parameters.job-name-deploy-staging >>
+          stack_name: << pipeline.parameters.project-name >>-staging-1
+          template: << pipeline.parameters.cluster-template >>
           args: --capabilities CAPABILITY_NAMED_IAM --no-fail-on-empty-changeset --parameter-overrides Certificate=arn:aws:acm:us-west-2:888340278975:certificate/f2c4fcd1-2061-41c0-a0f5-c14124cd1b3b
           <<: *main_only
 #         requires:
@@ -62,13 +78,13 @@ workflows:
       - 'Go to Production?':
           type: approval
           requires:
-            - 'Deploy to Staging'
+            - << pipeline.parameters.job-name-deploy-staging >>
           <<: *main_only
       - cloudformation/deploy:
           name: 'Deploy to Production Cluster'
-          stack_name: SharedID-prod-1 # stack_name has to be short here, since we're using it for constructin of other names in Cloudformation, and it has a 32 character length
-          template: ./.cloudformation/cluster.yml
+          stack_name: << pipeline.parameters.project-name >>-prod-1 # stack_name has to be short here, since we're using it for constructin of other names in Cloudformation, and it has a 32 character length
+          template: << pipeline.parameters.cluster-template >>
           args: --capabilities CAPABILITY_NAMED_IAM --no-fail-on-empty-changeset --parameter-overrides Certificate=arn:aws:acm:us-west-2:888340278975:certificate/f2c4fcd1-2061-41c0-a0f5-c14124cd1b3b
           requires:
-            - 'Go to Production?'
+            - << pipeline.parameters.job-name-production-approval >>
           <<: *main_only
