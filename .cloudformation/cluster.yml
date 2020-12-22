@@ -271,7 +271,7 @@ Resources:
           SecurityGroups:
             - !Ref ContainerSecurityGroup
       LoadBalancers:
-        - ContainerName: !Ref ServiceName
+        - ContainerName: !Ref AWS::StackName
           ContainerPort: !Ref ContainerPort
           TargetGroupArn: !Ref TargetGroup
   TargetGroup:
