@@ -14,6 +14,7 @@ main_only: &main_only
         - main
         - 'add-environments'
 
+# Global variables/parameters
 parameters:
   project-name:
     type: string
@@ -21,9 +22,15 @@ parameters:
   cluster-template:
     type: string
     default: './.cloudformation/cluster.yml'
+  repo-template:
+    type: string
+    default: './.cloudformation/repo.yml'
   job-name-deploy-staging:
     type: string
     default: 'Deploy to Staging'
+  job-name-deploy-production:
+    type: string
+    default: 'Deploy to Production'
   job-name-production-approval:
     type: string
     default: 'Go to Production?'
@@ -41,6 +48,7 @@ jobs:
     executor: docker-executor
     steps:
       - maven/test:
+          name: 'Building'
           command: 'build' # same as `mvn build`
 
   unit_test:
@@ -53,19 +61,40 @@ jobs:
     executor: docker-executor
     steps:
       - maven/test:
+          name: 'Packing'
           command: 'package'
       - maven/test:
+          name: 'Building Docker image'
           command: 'docker:build'
       - maven/test:
+          name: 'Pushing Docker image'
           command: 'docker:push'
 
 workflows:
-  deploy:
+  'deploy branch to stage':
     jobs:
 #      - cloudformation/deploy:
 #          name: 'Deploy to ECR'
 #          stack_name: SharedID-repo
 #          template: ./.cloudformation/repo.yml
+#          args: --no-fail-on-empty-changeset --parameter-overrides="RepoName=SharedID"
+      - cloudformation/deploy:
+          name: << pipeline.parameters.job-name-deploy-staging >>
+          stack_name: << pipeline.parameters.project-name >>-<< pipeline.git.branch >>
+          template: << pipeline.parameters.cluster-template >>
+          args: --capabilities CAPABILITY_NAMED_IAM --no-fail-on-empty-changeset --parameter-overrides Certificate=arn:aws:acm:us-west-2:888340278975:certificate/f2c4fcd1-2061-41c0-a0f5-c14124cd1b3b
+          filters:
+            branches:
+              only:
+                - << pipeline.git.branch >>
+#         requires:
+#           - 'Deploy to ECR'
+  'deploy to production':
+    jobs:
+#      - cloudformation/deploy:
+#          name: 'Deploy to ECR'
+#          stack_name: SharedID-repo
+#          template: << pipeline.parameters.repo-template >>
 #          args: --no-fail-on-empty-changeset --parameter-overrides="RepoName=SharedID"
       - cloudformation/deploy:
           name: << pipeline.parameters.job-name-deploy-staging >>
@@ -75,13 +104,14 @@ workflows:
           <<: *main_only
 #         requires:
 #           - 'Deploy to ECR'
-      - 'Go to Production?':
+      - production-deploy:
+          name: << pipeline.parameters.job-name-production-approval >>
           type: approval
           requires:
             - << pipeline.parameters.job-name-deploy-staging >>
           <<: *main_only
       - cloudformation/deploy:
-          name: 'Deploy to Production Cluster'
+          name: << pipeline.parameters.job-name-deploy-production >>
           stack_name: << pipeline.parameters.project-name >>-prod-1 # stack_name has to be short here, since we're using it for constructin of other names in Cloudformation, and it has a 32 character length
           template: << pipeline.parameters.cluster-template >>
           args: --capabilities CAPABILITY_NAMED_IAM --no-fail-on-empty-changeset --parameter-overrides Certificate=arn:aws:acm:us-west-2:888340278975:certificate/f2c4fcd1-2061-41c0-a0f5-c14124cd1b3b
