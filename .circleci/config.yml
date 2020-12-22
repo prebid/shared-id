@@ -38,35 +38,26 @@ jobs:
     executor: docker-executor
     steps:
       - cloudformation/deploy:
-          name: deploy-staging-cluster
           stack_name: SharedID-staging-1
+          template: ./.cloudformation/cluster.yml
+          args: --capabilities CAPABILITY_NAMED_IAM --no-fail-on-empty-changeset --parameter-overrides Certificate=arn:aws:acm:us-west-2:888340278975:certificate/f2c4fcd1-2061-41c0-a0f5-c14124cd1b3b
+
+  deploy_to_production:
+    executor: docker-executor
+    steps:
+      - cloudformation/deploy:
+          stack_name: SharedID-production-1
           template: ./.cloudformation/cluster.yml
           args: --capabilities CAPABILITY_NAMED_IAM --no-fail-on-empty-changeset --parameter-overrides Certificate=arn:aws:acm:us-west-2:888340278975:certificate/f2c4fcd1-2061-41c0-a0f5-c14124cd1b3b
 
 workflows:
   deploy:
     jobs:
-#      - cloudformation/deploy:
-#          name: deploy-repo
-#          stack_name: SharedID-repo
-#          template: ./.cloudformation/repo.yml
-#          args: --no-fail-on-empty-changeset --parameter-overrides="RepoName=SharedID"
-#      - publish:
-#          requires:
-#            - deploy-repo
-      - deploy_to_staging:
-#         requires:
-#         filters:
-#           branches:
-#             only: /master/
+      - deploy_to_staging
       - hold:
           type: approval
           requires:
             - deploy_to_staging
-      - cloudformation/deploy:
-          name: deploy-production-cluster
-          stack_name: SharedID-production-1
-          template: ./.cloudformation/cluster.yml
-          args: --capabilities CAPABILITY_NAMED_IAM --no-fail-on-empty-changeset --parameter-overrides Certificate=arn:aws:acm:us-west-2:888340278975:certificate/f2c4fcd1-2061-41c0-a0f5-c14124cd1b3b
+      - deploy_to_production:
           requires:
             - hold
