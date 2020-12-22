@@ -10,7 +10,7 @@ Parameters:
     Default: 888340278975.dkr.ecr.us-west-2.amazonaws.com/sharedid:1.0.0
   ServiceName:
     Type: String
-    Default: SharedID
+    Default: !Join ['', [!Ref 'AWS::StackName']]
   ContainerPort:
     Type: Number
     Default: 80
