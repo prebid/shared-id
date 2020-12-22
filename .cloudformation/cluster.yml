@@ -142,7 +142,7 @@ Resources:
   Cluster:
     Type: AWS::ECS::Cluster
     Properties:
-      ClusterName: !Join ['', [!Ref , Cluster]]
+      ClusterName: !Join ['', [!Ref AWS::StackName, Cluster]]
   TaskDefinition:
     Type: AWS::ECS::TaskDefinition
     # Makes sure the log group is created before it is used.
@@ -251,7 +251,7 @@ Resources:
     DependsOn:
       - ListenerHTTPS
     Properties:
-      ServiceName: !Ref AWS::StackName
+      ServiceName: !Join ['', [!Ref AWS::StackName, Service]]
       Cluster: !Ref Cluster
       TaskDefinition: !Ref TaskDefinition
       DeploymentConfiguration:
@@ -271,7 +271,7 @@ Resources:
           SecurityGroups:
             - !Ref ContainerSecurityGroup
       LoadBalancers:
-        - ContainerName: !Ref AWS::StackName
+        - ContainerName: !Ref ServiceName
           ContainerPort: !Ref ContainerPort
           TargetGroupArn: !Ref TargetGroup
   TargetGroup:
