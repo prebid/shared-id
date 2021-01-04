@@ -12,7 +12,7 @@ main_only: &main_only
     branches:
       only:
         - main
-        - 'add-environments'
+        - 'feat-add-infrastructure'
 
 # Global variables/parameters
 parameters:
