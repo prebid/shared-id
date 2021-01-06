@@ -88,8 +88,8 @@ jobs:
       - setup_remote_docker:
           version: 19.03.13
       - run: mvn package
-      - run: mvn docker:build
-      - run: mvn docker:push -Ddocker.push.registry=<< pipeline.parameters.repo >>/sharedid:<< pipeline.git.revision >>
+      - run: GIT_REVISION=<< pipeline.git.revision >> mvn docker:build
+      - run: DOCKER_REPO=<< pipeline.parameters.repo >> mvn docker:push
 
 workflows:
   staging:

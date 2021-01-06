@@ -223,8 +223,8 @@
           <images>
             <image>
               <alias>service</alias>
-              <name>sharedid:${project.version}</name>
-              <registry>888340278975.dkr.ecr.us-west-2.amazonaws.com</registry>
+              <name>sharedid:${GIT_REVISION}</name>
+              <registry>${DOCKER_REPO}</registry>
               <build>
                 <dockerFileDir>${project.basedir}</dockerFileDir>
                 <filter>${*}</filter>
