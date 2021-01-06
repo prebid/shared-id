@@ -12,7 +12,7 @@ main_only: &main_only
     branches:
       only:
         - main
-        - 'feat-add-infrastructure'
+        - 'add-task-deployment-from-build'
 
 # Global variables/parameters
 parameters:
@@ -22,12 +22,18 @@ parameters:
   cluster-template:
     type: string
     default: './.cloudformation/cluster.yml'
+  service-template:
+    type: string
+    default: './.cloudformation/service.yml'
   repo-template:
     type: string
     default: './.cloudformation/repo.yml'
   job-name-deploy-staging:
     type: string
     default: 'Deploy to Staging'
+  job-name-deploy-service-staging:
+    type: string
+    default: 'Deploy Service to Staging'
   job-name-deploy-production:
     type: string
     default: 'Deploy to Production'
@@ -57,7 +63,7 @@ jobs:
       - maven/test # checkout, build, test, and upload test results
 
   # same as `mvn package`
-  package:
+  publish:
     executor: docker-executor
     steps:
       - maven/test:
@@ -68,7 +74,7 @@ jobs:
           command: 'docker:build'
       - maven/test:
           name: 'Pushing Docker image'
-          command: 'docker:push'
+          command: 'docker:push -Ddocker.push.registry=888340278975.dkr.ecr.us-west-2.amazonaws.com/sharedid:1.0.0'
 
 workflows:
   staging:
@@ -79,12 +85,22 @@ workflows:
 #          template: << pipeline.parameters.repo-template >>
 #          args: --no-fail-on-empty-changeset --parameter-overrides="RepoName=SharedID"
 #          <<: *main_only
+      - publish:
+          <<: *main_only
       - cloudformation/deploy:
           name: << pipeline.parameters.job-name-deploy-staging >>
           stack_name: << pipeline.parameters.project-name >>-staging
           template: << pipeline.parameters.cluster-template >>
           args: --capabilities CAPABILITY_NAMED_IAM --no-fail-on-empty-changeset --parameter-overrides Certificate=arn:aws:acm:us-west-2:888340278975:certificate/f2c4fcd1-2061-41c0-a0f5-c14124cd1b3b
           <<: *main_only
+#      - cloudformation/deploy:
+#          name: << pipeline.parameters.job-name-deploy-service-staging >>
+#          stack_name: << pipeline.parameters.project-name >>-service-staging
+#          template: << pipeline.parameters.service-template >>
+#          args: --capabilities CAPABILITY_NAMED_IAM --no-fail-on-empty-changeset --parameter-overrides Certificate=arn:aws:acm:us-west-2:888340278975:certificate/f2c4fcd1-2061-41c0-a0f5-c14124cd1b3b ClusterStackName=<< pipeline.parameters.project-name >>-staging
+#          <<: *main_only
+#          requires:
+#            - << pipeline.parameters.job-name-deploy-staging >>
 #         requires:
 #           - 'Deploy to ECR'
   production:
