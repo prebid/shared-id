@@ -63,7 +63,7 @@ jobs:
       - maven/test # checkout, build, test, and upload test results
 
   # same as `mvn package`
-  publish:
+  package:
     executor: docker-executor
     steps:
       - maven/test:
@@ -74,7 +74,19 @@ jobs:
           command: 'docker:build'
       - maven/test:
           name: 'Pushing Docker image'
-          command: 'docker:push -Ddocker.push.registry=888340278975.dkr.ecr.us-west-2.amazonaws.com/sharedid:1.0.0'
+          command: 'docker:push'
+
+  publish:
+    docker:
+      - image: cimg/openjdk:11.0
+    steps:
+      - checkout
+      - run: sudo apt-get update && sudo apt-get install maven
+      - setup_remote_docker:
+          version: 19.03.13
+      - run: mvn package
+      - run: mvn docker:build
+      - run: mvn docker:push -Ddocker.push.registry=888340278975.dkr.ecr.us-west-2.amazonaws.com/sharedid:1.0.0
 
 workflows:
   staging:
@@ -93,14 +105,14 @@ workflows:
           template: << pipeline.parameters.cluster-template >>
           args: --capabilities CAPABILITY_NAMED_IAM --no-fail-on-empty-changeset --parameter-overrides Certificate=arn:aws:acm:us-west-2:888340278975:certificate/f2c4fcd1-2061-41c0-a0f5-c14124cd1b3b
           <<: *main_only
-#      - cloudformation/deploy:
-#          name: << pipeline.parameters.job-name-deploy-service-staging >>
-#          stack_name: << pipeline.parameters.project-name >>-service-staging
-#          template: << pipeline.parameters.service-template >>
-#          args: --capabilities CAPABILITY_NAMED_IAM --no-fail-on-empty-changeset --parameter-overrides Certificate=arn:aws:acm:us-west-2:888340278975:certificate/f2c4fcd1-2061-41c0-a0f5-c14124cd1b3b ClusterStackName=<< pipeline.parameters.project-name >>-staging
-#          <<: *main_only
-#          requires:
-#            - << pipeline.parameters.job-name-deploy-staging >>
+      - cloudformation/deploy:
+          name: << pipeline.parameters.job-name-deploy-service-staging >>
+          stack_name: << pipeline.parameters.project-name >>-service-staging
+          template: << pipeline.parameters.service-template >>
+          args: --capabilities CAPABILITY_NAMED_IAM --no-fail-on-empty-changeset --parameter-overrides Certificate=arn:aws:acm:us-west-2:888340278975:certificate/f2c4fcd1-2061-41c0-a0f5-c14124cd1b3b ClusterStackName=<< pipeline.parameters.project-name >>-staging
+          <<: *main_only
+          requires:
+            - << pipeline.parameters.job-name-deploy-staging >>
 #         requires:
 #           - 'Deploy to ECR'
   production:
