@@ -89,7 +89,7 @@ jobs:
           version: 19.03.13
       - run: mvn package
       - run: GIT_REVISION=<< pipeline.git.revision >> mvn docker:build
-      - run: DOCKER_REPO=<< pipeline.parameters.repo >> mvn docker:push
+      - run: GIT_REVISION=<< pipeline.git.revision >> DOCKER_REPO=<< pipeline.parameters.repo >> mvn docker:push
 
 workflows:
   staging:
