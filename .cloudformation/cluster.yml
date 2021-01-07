@@ -188,11 +188,11 @@ Resources:
           PortMappings:
             - ContainerPort: !Ref ContainerPort
           Cpu: 256
-          Memory: 0.5GB
+          Memory: 512
           WorkingDirectory: /app/shared-id-endpoint
-#          Environment:
-#            - Name: ENVIRONMENT
-#              Value: !Ref Environment
+          Environment:
+            - Name: ENVIRONMENT
+              Value: !Ref Environment
           # Send logs to CloudWatch Logs
           LogConfiguration:
             LogDriver: awslogs
