@@ -244,7 +244,6 @@ Resources:
     DependsOn: ListenerHTTPS
     Properties:
       ServiceName: !Join [ '', [ !Ref AWS::StackName, Service ] ]
-      #        Cluster: !Ref Cluster
       Cluster: !Ref Cluster
       TaskDefinition: !Ref TaskDefinition
       DeploymentConfiguration:
