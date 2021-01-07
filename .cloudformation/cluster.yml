@@ -189,6 +189,7 @@ Resources:
             - ContainerPort: !Ref ContainerPort
           Cpu: 256
           Memory: 512
+          MemoryReservation: 512
           WorkingDirectory: /app/shared-id-endpoint
           Environment:
             - Name: ENVIRONMENT
