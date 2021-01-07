@@ -33,7 +33,7 @@ parameters:
     default: 888340278975.dkr.ecr.us-west-2.amazonaws.com
   job-name-deploy-staging:
     type: string
-    default: 'Deploy Staging Cluster'
+    default: 'Deploy to Staging'
   job-name-deploy-service-staging:
     type: string
     default: 'Deploy Service to Staging'
@@ -106,18 +106,10 @@ workflows:
           name: << pipeline.parameters.job-name-deploy-staging >>
           stack_name: << pipeline.parameters.project-name >>-staging
           template: << pipeline.parameters.cluster-template >>
-          args: --capabilities CAPABILITY_NAMED_IAM --no-fail-on-empty-changeset
+          args: --capabilities CAPABILITY_NAMED_IAM --no-fail-on-empty-changeset --parameter-overrides Certificate=arn:aws:acm:us-west-2:888340278975:certificate/f2c4fcd1-2061-41c0-a0f5-c14124cd1b3b Image=<< pipeline.parameters.repo >>/sharedid:<< pipeline.git.revision >>
           <<: *main_only
           requires:
             - publish
-      - cloudformation/deploy:
-          name: << pipeline.parameters.job-name-deploy-service-staging >>
-          stack_name: << pipeline.parameters.project-name >>-service-staging
-          template: << pipeline.parameters.service-template >>
-          args: --capabilities CAPABILITY_NAMED_IAM --no-fail-on-empty-changeset --parameter-overrides Certificate=arn:aws:acm:us-west-2:888340278975:certificate/f2c4fcd1-2061-41c0-a0f5-c14124cd1b3b ClusterStackName=<< pipeline.parameters.project-name >>-staging Image=<< pipeline.parameters.repo >>/sharedid:<< pipeline.git.revision >>
-          <<: *main_only
-          requires:
-            - << pipeline.parameters.job-name-deploy-staging >>
 #         requires:
 #           - 'Deploy to ECR'
   production:
