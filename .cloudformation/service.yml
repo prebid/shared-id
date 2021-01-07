@@ -122,8 +122,7 @@ Parameters:
     Service:
       Type: AWS::ECS::Service
       # This dependency is needed so that the load balancer is setup correctly in time
-      DependsOn:
-        - ListenerHTTPS
+      DependsOn: ListenerHTTPS
       Properties:
         ServiceName: !Join [ '', [ !Ref AWS::StackName, Service ] ]
 #        Cluster: !Ref Cluster

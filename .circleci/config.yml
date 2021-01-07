@@ -33,7 +33,7 @@ parameters:
     default: 888340278975.dkr.ecr.us-west-2.amazonaws.com
   job-name-deploy-staging:
     type: string
-    default: 'Deploy to Staging'
+    default: 'Deploy Staging Cluster'
   job-name-deploy-service-staging:
     type: string
     default: 'Deploy Service to Staging'
