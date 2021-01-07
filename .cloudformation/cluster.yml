@@ -28,6 +28,9 @@ Parameters:
   AutoScalingTargetValue:
     Type: Number
     Default: 50
+  Environment:
+    Type: String
+    Default: "qa"
 Resources:
   VPC:
     Type: 'AWS::EC2::VPC'
@@ -184,6 +187,12 @@ Resources:
           Image: !Ref Image
           PortMappings:
             - ContainerPort: !Ref ContainerPort
+          Cpu: 256
+          Memory: 0.5GB
+          WorkingDirectory: /app/shared-id-endpoint
+          Environment:
+            - Name: "ENVIRONMENT"
+              Value: !Ref Environment
           # Send logs to CloudWatch Logs
           LogConfiguration:
             LogDriver: awslogs
