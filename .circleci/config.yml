@@ -31,6 +31,9 @@ parameters:
   repo:
     type: string
     default: 888340278975.dkr.ecr.us-west-2.amazonaws.com
+  job-name-publish:
+    type: string
+    default: 'Publish docker image'
   job-name-deploy-staging:
     type: string
     default: 'Deploy to Staging'
@@ -101,7 +104,7 @@ workflows:
 #          args: --no-fail-on-empty-changeset --parameter-overrides="RepoName=SharedID"
 #          <<: *main_only
       - publish:
-          name: "Publish docker image"
+          name: << pipeline.parameters.job-name-publish >>
           <<: *main_only
       - cloudformation/deploy:
           name: << pipeline.parameters.job-name-deploy-staging >>
@@ -110,7 +113,7 @@ workflows:
           args: --capabilities CAPABILITY_NAMED_IAM --no-fail-on-empty-changeset --parameter-overrides Certificate=arn:aws:acm:us-west-2:888340278975:certificate/f2c4fcd1-2061-41c0-a0f5-c14124cd1b3b Image=<< pipeline.parameters.repo >>/sharedid:<< pipeline.git.revision >> Environment=qa
           <<: *main_only
           requires:
-            - publish
+            - << pipeline.parameters.job-name-publish >>
 #         requires:
 #           - 'Deploy to ECR'
 #  production:
