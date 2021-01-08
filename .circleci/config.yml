@@ -97,15 +97,12 @@ jobs:
 workflows:
   staging:
     jobs:
-#      - cloudformation/deploy:
-#          name: 'Deploy to ECR'
-#          stack_name: SharedID-repo
-#          template: << pipeline.parameters.repo-template >>
-#          args: --no-fail-on-empty-changeset --parameter-overrides="RepoName=SharedID"
-#          <<: *main_only
+      - maven/test:
       - publish:
           name: << pipeline.parameters.job-name-publish >>
           <<: *main_only
+          requires:
+            - maven/test
       - cloudformation/deploy:
           name: << pipeline.parameters.job-name-deploy-staging >>
           stack_name: << pipeline.parameters.project-name >>-staging
