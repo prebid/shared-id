@@ -103,7 +103,8 @@ jobs:
 workflows:
   staging:
     jobs:
-      - maven/test
+      - maven/test:
+          name: Build
       - publish:
           name: << pipeline.parameters.job-name-publish >>
           <<: *main_only
