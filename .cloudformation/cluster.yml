@@ -14,6 +14,9 @@ Parameters:
   LoadBalancerPort:
     Type: Number
     Default: 443
+  LoadBalancerPortHTTP:
+    Type: Number
+    Default: 80
   HealthCheckPath:
     Type: String
     Default: /health
@@ -248,6 +251,10 @@ Resources:
           FromPort: !Ref LoadBalancerPort
           ToPort: !Ref LoadBalancerPort
           CidrIp: 0.0.0.0/0
+        - IpProtocol: tcp
+          FromPort: !Ref LoadBalancerPortHTTP
+          ToPort: !Ref LoadBalancerPortHTTP
+          CidrIp: 0.0.0.0/0
   Service:
     Type: AWS::ECS::Service
     # This dependency is needed so that the load balancer is setup correctly in time
@@ -311,7 +318,7 @@ Resources:
         - TargetGroupArn: !Ref TargetGroup
           Type: forward
       LoadBalancerArn: !Ref LoadBalancer
-      Port: !Ref LoadBalancerPort
+      Port: !Ref LoadBalancerPortHTTP
       Protocol: HTTP
   LoadBalancer:
     Type: AWS::ElasticLoadBalancingV2::LoadBalancer
