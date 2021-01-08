@@ -37,6 +37,9 @@ parameters:
   repo:
     type: string
     default: 888340278975.dkr.ecr.us-west-2.amazonaws.com
+  job-name-build-and-test:
+    type: string
+    default: 'Build and test'
   job-name-publish:
     type: string
     default: 'Publish docker image'
@@ -104,12 +107,12 @@ workflows:
   staging:
     jobs:
       - maven/test:
-          name: Build
+          name: << pipeline.parameters.job-name-build-and-test >>
       - publish:
           name: << pipeline.parameters.job-name-publish >>
           <<: *main_only
           requires:
-            - maven/test
+            - << pipeline.parameters.job-name-build-and-test >>
       - cloudformation/deploy:
           name: << pipeline.parameters.job-name-deploy-staging >>
           stack_name: << pipeline.parameters.project-name >>-staging
