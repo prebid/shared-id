@@ -1,0 +1,145 @@
+version: 2.1
+
+orbs:
+  cloudformation: frameio/cloudformation@0.17.3
+#  aws-ecr: circleci/aws-ecr@6.14.0
+  maven: circleci/maven@1.0.3 # https://circleci.com/developer/orbs/orb/circleci/maven
+
+# Main Only Branch filter
+# https://discuss.circleci.com/t/can-you-filter-on-a-workflow-level/30624/5
+main_only: &main_only
+  filters:
+    branches:
+      only:
+        - main
+        - 'add-task-deployment-from-build'
+
+# Global variables/parameters
+parameters:
+  project-name:
+    type: string
+    default: 'SharedID'
+  cluster-template:
+    type: string
+    default: './.cloudformation/cluster.yml'
+  service-template:
+    type: string
+    default: './.cloudformation/service.yml'
+  repo-template:
+    type: string
+    default: './.cloudformation/repo.yml'
+  certificate-staging:
+    type: string
+    default: 'arn:aws:acm:us-west-2:888340278975:certificate/57a5f902-08a9-4546-afa2-cae93d324a80'
+  certificate-prod:
+    type: string
+    default: 'arn:aws:acm:us-west-2:888340278975:certificate/7c7a0eba-4af0-4397-b4c4-75954fa50b3a'
+  repo:
+    type: string
+    default: 888340278975.dkr.ecr.us-west-2.amazonaws.com
+  job-name-build-and-test:
+    type: string
+    default: 'Build and test'
+  job-name-publish:
+    type: string
+    default: 'Publish docker image'
+  job-name-deploy-staging:
+    type: string
+    default: 'Deploy to Staging'
+  job-name-deploy-service-staging:
+    type: string
+    default: 'Deploy Service to Staging'
+  job-name-deploy-production:
+    type: string
+    default: 'Deploy to Production'
+  job-name-production-approval:
+    type: string
+    default: 'Go to Production?'
+
+# Global defined executor for all the jobs
+executors:
+  docker-executor:
+    docker:
+      - image: cimg/openjdk:11.0
+
+# Reusable Jobs
+# @TODO: not used right now, but should be tested to ensure that they work and do what is expected; e.g. build, test, & publish
+jobs:
+  build:
+    executor: docker-executor
+    steps:
+      - maven/test:
+          name: 'Building'
+          command: 'build' # same as `mvn build`
+
+  unit_test:
+    executor: docker-executor
+    steps:
+      - maven/test # checkout, build, test, and upload test results
+
+  # same as `mvn package`
+  package:
+    executor: docker-executor
+    steps:
+      - maven/test:
+          name: 'Packing'
+          command: 'package'
+      - maven/test:
+          name: 'Building Docker image'
+          command: 'docker:build'
+      - maven/test:
+          name: 'Pushing Docker image'
+          command: 'docker:push'
+
+  publish:
+    docker:
+      - image: cimg/openjdk:11.0
+    steps:
+      - checkout
+      - run: sudo apt-get update && sudo apt-get install maven
+      - setup_remote_docker:
+          version: 19.03.13
+      - run: mvn package
+      - run: GIT_REVISION=<< pipeline.git.revision >> mvn docker:build
+      - run: GIT_REVISION=<< pipeline.git.revision >> DOCKER_REPO=<< pipeline.parameters.repo >> mvn docker:push
+
+workflows:
+  staging:
+    jobs:
+      - maven/test:
+          name: << pipeline.parameters.job-name-build-and-test >>
+      - publish:
+          name: << pipeline.parameters.job-name-publish >>
+          <<: *main_only
+          requires:
+            - << pipeline.parameters.job-name-build-and-test >>
+      - cloudformation/deploy:
+          name: << pipeline.parameters.job-name-deploy-staging >>
+          stack_name: << pipeline.parameters.project-name >>-staging
+          template: << pipeline.parameters.cluster-template >>
+          args: --capabilities CAPABILITY_NAMED_IAM --no-fail-on-empty-changeset --parameter-overrides Certificate=<< pipeline.parameters.certificate-staging >> Image=<< pipeline.parameters.repo >>/sharedid:<< pipeline.git.revision >> Environment=qa
+          <<: *main_only
+          requires:
+            - << pipeline.parameters.job-name-publish >>
+#         requires:
+#           - 'Deploy to ECR'
+#  production:
+#    jobs:
+#      - start-deploy:
+#          name: << pipeline.parameters.job-name-production-approval >>
+#          type: approval
+#          <<: *main_only
+##      - cloudformation/deploy:
+##          name: 'Deploy to ECR'
+##          stack_name: SharedID-repo
+##          template: << pipeline.parameters.repo-template >>
+##          args: --no-fail-on-empty-changeset --parameter-overrides="RepoName=SharedID"
+##          <<: *main_only
+#      - cloudformation/deploy:
+#          name: << pipeline.parameters.job-name-deploy-production >>
+#          stack_name: << pipeline.parameters.project-name >>-prod-1 # stack_name has to be short here, since we're using it for constructin of other names in Cloudformation, and it has a 32 character length
+#          template: << pipeline.parameters.cluster-template >>
+#          args: --capabilities CAPABILITY_NAMED_IAM --no-fail-on-empty-changeset --parameter-overrides Certificate=arn:aws:acm:us-west-2:888340278975:certificate/f2c4fcd1-2061-41c0-a0f5-c14124cd1b3b
+#          requires:
+#            - << pipeline.parameters.job-name-production-approval >>
+#          <<: *main_only
