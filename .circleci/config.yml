@@ -2,7 +2,6 @@ version: 2.1
 
 orbs:
   cloudformation: frameio/cloudformation@0.17.3
-#  aws-ecr: circleci/aws-ecr@6.14.0
   maven: circleci/maven@1.0.3 # https://circleci.com/developer/orbs/orb/circleci/maven
 
 # Main Only Branch filter
@@ -114,7 +113,7 @@ workflows:
           name: << pipeline.parameters.job-name-deploy-staging >>
           stack_name: << pipeline.parameters.project-name >>-staging
           template: << pipeline.parameters.cluster-template >>
-          args: --capabilities CAPABILITY_NAMED_IAM --no-fail-on-empty-changeset --parameter-overrides Certificate=<< pipeline.parameters.certificate-staging >> Image=<< pipeline.parameters.repo >>/sharedid:<< pipeline.git.revision >> Environment=qa
+          args: --capabilities CAPABILITY_NAMED_IAM --no-fail-on-empty-changeset --parameter-overrides Certificate=<< pipeline.parameters.certificate-staging >> Image=<< pipeline.parameters.repo >>/sharedid:<< pipeline.git.revision >> Environment=qa CPU=256 Memory=512
           <<: *main_only
           requires:
             - << pipeline.parameters.job-name-publish >>
@@ -128,7 +127,7 @@ workflows:
           name: << pipeline.parameters.job-name-deploy-production >>
           stack_name: << pipeline.parameters.project-name >>-prod # stack_name has to be short here, since we're using it for construction of other names in Cloudformation, and it has a 32 character length
           template: << pipeline.parameters.cluster-template >>
-          args: --capabilities CAPABILITY_NAMED_IAM --no-fail-on-empty-changeset --parameter-overrides Certificate=<< pipeline.parameters.certificate-prod >> Image=<< pipeline.parameters.repo >>/sharedid:<< pipeline.git.revision >> Environment=prod
+          args: --capabilities CAPABILITY_NAMED_IAM --no-fail-on-empty-changeset --parameter-overrides Certificate=<< pipeline.parameters.certificate-prod >> Image=<< pipeline.parameters.repo >>/sharedid:<< pipeline.git.revision >> Environment=prod CPU=2048 Memory=4096
           requires:
             - << pipeline.parameters.job-name-production-approval >>
           <<: *main_only
