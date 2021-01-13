@@ -34,6 +34,12 @@ Parameters:
   Environment:
     Type: String
     Default: "qa"
+  CPU:
+    Type: Number
+    Default: 256
+  Memory:
+    Type: Number
+    Default: 512
 Resources:
   VPC:
     Type: 'AWS::EC2::VPC'
@@ -172,13 +178,13 @@ Resources:
       # 1024 (1 vCPU) - Available memory values: 2GB, 3GB, 4GB, 5GB, 6GB, 7GB, 8GB
       # 2048 (2 vCPU) - Available memory values: Between 4GB and 16GB in 1GB increments
       # 4096 (4 vCPU) - Available memory values: Between 8GB and 30GB in 1GB increments
-      Cpu: 256
+      Cpu: !Ref CPU
       # 0.5GB, 1GB, 2GB - Available cpu values: 256 (.25 vCPU)
       # 1GB, 2GB, 3GB, 4GB - Available cpu values: 512 (.5 vCPU)
       # 2GB, 3GB, 4GB, 5GB, 6GB, 7GB, 8GB - Available cpu values: 1024 (1 vCPU)
       # Between 4GB and 16GB in 1GB increments - Available cpu values: 2048 (2 vCPU)
       # Between 8GB and 30GB in 1GB increments - Available cpu values: 4096 (4 vCPU)
-      Memory: 0.5GB
+      Memory: !Ref Memory
       # A role needed by ECS.
       # "The ARN of the task execution role that containers in this task can assume. All containers in this task are granted the permissions that are specified in this role."
       # "There is an optional task execution IAM role that you can specify with Fargate to allow your Fargate tasks to make API calls to Amazon ECR."
@@ -190,9 +196,9 @@ Resources:
           Image: !Ref Image
           PortMappings:
             - ContainerPort: !Ref ContainerPort
-          Cpu: 256
-          Memory: 512
-          MemoryReservation: 512
+          Cpu: !Ref CPU
+          Memory: !Ref Memory
+          MemoryReservation: !Ref Memory
           WorkingDirectory: /app/shared-id-endpoint
           Environment:
             - Name: ENVIRONMENT
@@ -377,7 +383,3 @@ Outputs:
     Value: !Ref Cluster
     Export:
       Name: !Join ['', [!Ref AWS::StackName, Cluster]]
-#Outputs:
-#  Endpoint:
-#    Description: Endpoint
-#    Value: !Join ['', ['https://', !Ref DNSRecord]]
