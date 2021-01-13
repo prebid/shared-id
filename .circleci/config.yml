@@ -11,7 +11,6 @@ main_only: &main_only
     branches:
       only:
         - main
-        - 'feat-add-prod-infra'
 
 # Global variables/parameters
 parameters:
@@ -59,34 +58,7 @@ executors:
       - image: cimg/openjdk:11.0
 
 # Reusable Jobs
-# @TODO: not used right now, but should be tested to ensure that they work and do what is expected; e.g. build, test, & publish
 jobs:
-  build:
-    executor: docker-executor
-    steps:
-      - maven/test:
-          name: 'Building'
-          command: 'build' # same as `mvn build`
-
-  unit_test:
-    executor: docker-executor
-    steps:
-      - maven/test # checkout, build, test, and upload test results
-
-  # same as `mvn package`
-  package:
-    executor: docker-executor
-    steps:
-      - maven/test:
-          name: 'Packing'
-          command: 'package'
-      - maven/test:
-          name: 'Building Docker image'
-          command: 'docker:build'
-      - maven/test:
-          name: 'Pushing Docker image'
-          command: 'docker:push'
-
   publish:
     docker:
       - image: cimg/openjdk:11.0
