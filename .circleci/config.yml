@@ -51,12 +51,6 @@ parameters:
     type: string
     default: 'Go to Production?'
 
-# Global defined executor for all the jobs
-executors:
-  docker-executor:
-    docker:
-      - image: cimg/openjdk:11.0
-
 # Reusable Jobs
 jobs:
   publish:
