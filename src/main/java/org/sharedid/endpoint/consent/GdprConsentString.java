@@ -70,12 +70,6 @@ public class GdprConsentString {
             return false;
         }
 
-        boolean hasLegitimateInterest = tcString.getVendorLegitimateInterest().contains(vendorId);
-
-        if (!hasLegitimateInterest) {
-            return false;
-        }
-
         //Cory (4/6/2020): Ignoring LI transparency fields for now...
 
         boolean hasPublisherRestrictions = tcString.getPublisherRestrictions().stream().anyMatch(publisherRestriction -> {
