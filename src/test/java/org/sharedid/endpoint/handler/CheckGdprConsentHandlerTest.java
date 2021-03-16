@@ -53,7 +53,7 @@ public class CheckGdprConsentHandlerTest {
 
         when(metricRegistry.meter(anyString())).thenReturn(meter);
 
-        handler = new CheckGdprConsentHandler(metricRegistry, 52);
+        handler = new CheckGdprConsentHandler(metricRegistry, 887);
     }
 
     @Test
@@ -105,7 +105,7 @@ public class CheckGdprConsentHandlerTest {
     public void testGdprConsentStringGranted() throws Exception {
         when(routingContext.response()).thenReturn(response);
 
-        String consentString = "COuQACgOuQACgM-AAAENAPCAAIAAAIAAAAAAAjQAQAaACNABABoACEgAgA0A";
+        String consentString = "CPC1ggVPC1ggVM-AAAENBQCAAIAAAAAAAAAAG7wAQG7gAAAA";
 
         GdprConsentString gdprConsentString =
                 new GdprConsentString(consentString);
