@@ -1,3 +1,5 @@
 dist
+docs/*.LICENSE.txt
+docs/*.map
 node_modules
 /shared-id-js.iml
