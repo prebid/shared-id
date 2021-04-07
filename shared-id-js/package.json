@@ -1,0 +1,28 @@
+{
+  "name": "sharedid-library",
+  "description": "Shared ID Cookie Library",
+  "version": "1.0.0",
+  "main": "dist/sharedid.js",
+  "files": [
+    "dist"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:prebid/shared-id/share-id.git"
+  },
+  "license": "Apache-2.0",
+  "scripts": {
+    "dist": "webpack",
+    "build-static": "npm run dist && cp -f dist/sharedid.js ../src/main/resources/webroot/lib/",
+    "test": "npm run dist && cp -f dist/* docs/ && serve docs"
+  },
+  "devDependencies": {
+    "serve": "^11.3.2",
+    "terser-webpack-plugin": "^5.1.1",
+    "webpack": "^5.30.0",
+    "webpack-cli": "^4.6.0"
+  },
+  "dependencies": {
+    "jsencrypt": "^3.1.0"
+  }
+}

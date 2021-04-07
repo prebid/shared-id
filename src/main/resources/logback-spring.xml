@@ -58,21 +58,14 @@
     <logger name="org.springframework.boot" level="INFO"/>
 
     <springProfile name="local">
-        <include resource="org/springframework/boot/logging/logback/defaults.xml" />
-        <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
-            <encoder>
-                <charset>utf-8</charset>
-                <pattern>%d{ISO8601} [%thread] %X{RID} %-5level %logger{36} - %msg%n</pattern>
-            </encoder>
-        </appender>
-
-        <logger name="org.sharedid.endpoint" level="DEBUG"/>
-        <logger name="io.github.azagniotov.metrics.reporter.cloudwatch.CloudWatchReporter" level="DEBUG"/>
-
+        <include resource="org/springframework/boot/logging/logback/defaults.xml"/>
+        <property name="CONSOLE_LOG_PATTERN"
+                  value="%clr(%d{${LOG_DATEFORMAT_PATTERN:-yyyy-MM-dd HH:mm:ss.SSS}}){faint} %clr(${LOG_LEVEL_PATTERN:-%5p}) %clr([%t]){faint} %clr(%-0.30logger{36}){cyan} %clr(:){faint} %m%n${LOG_EXCEPTION_CONVERSION_WORD:-%wEx}"/>
+        <include resource="org/springframework/boot/logging/logback/console-appender.xml"/>
         <root level="INFO">
             <appender-ref ref="CONSOLE"/>
-            <appender-ref ref="ASYNC_FILE"/>
         </root>
+        <logger name="org.sharedid.endpoint" level="DEBUG"/>
     </springProfile>
 
     <springProfile name="dev,qa">

@@ -64,8 +64,9 @@ public class RouteConfiguration {
                                 .allowedMethod(HttpMethod.POST)
                                 .allowedMethod(HttpMethod.OPTIONS));
 
-        router.get("/")
-                .handler(StaticHandler.create().setIndexPage("index.html"));
+        router.get("/lib/*").handler(StaticHandler.create("webroot/lib"));
+        router.get("/keys/*").handler(StaticHandler.create("webroot/keys"));
+        router.get("/").handler(StaticHandler.create().setIndexPage("index.html"));
 
         router.get("/usync")
                 .handler(handlerRegistry.get(AddDefaultHeadersHandler.class))
