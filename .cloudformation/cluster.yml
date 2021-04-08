@@ -45,6 +45,7 @@ Resources:
     Type: 'AWS::EC2::VPC'
     Properties:
       CidrBlock: 172.31.0.0/16
+      EnableDnsHostnames: true
   PublicSubnet1:
     Type: 'AWS::EC2::Subnet'
     Properties:
