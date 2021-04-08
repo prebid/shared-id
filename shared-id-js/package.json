@@ -1,5 +1,5 @@
 {
-  "name": "sharedid-library",
+  "name": "sharedid.cookie",
   "description": "Shared ID Cookie Library",
   "version": "1.0.0",
   "main": "dist/sharedid.js",
