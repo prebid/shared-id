@@ -6,3 +6,4 @@ SharedID.org Cookie
 
 ```bash
 npm install --save sharedid.cookie
+```

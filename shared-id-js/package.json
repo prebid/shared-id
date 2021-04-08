@@ -13,7 +13,7 @@
   "license": "Apache-2.0",
   "scripts": {
     "dist": "webpack",
-    "build-static": "npm run dist && cp -f dist/sharedid.js ../src/main/resources/webroot/lib/",
+    "build-static": "npm run dist && cp -f dist/sharedid.cookie.js ../src/main/resources/webroot/lib/",
     "test": "npm run dist && cp -f dist/* docs/ && serve docs"
   },
   "devDependencies": {
