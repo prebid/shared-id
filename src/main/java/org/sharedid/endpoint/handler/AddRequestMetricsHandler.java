@@ -11,8 +11,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.PostConstruct;
-
 @Component
 public class AddRequestMetricsHandler implements Handler<RoutingContext> {
     private static final Logger logger = LoggerFactory.getLogger(AddRequestMetricsHandler.class);
@@ -20,19 +18,13 @@ public class AddRequestMetricsHandler implements Handler<RoutingContext> {
     private static final String METRIC_REQUEST_TIME = "shared-id.handler.request.request_time";
     private static final String METRIC_REQUEST_ROUTE_TIME_TEMPLATE = "shared-id.handler.request.route.%s.time";
 
-    private MetricRegistry metricRegistry;
-
-    private Timer requestTimer;
+    private final MetricRegistry metricRegistry;
+    private final Timer requestTimer;
 
     @Autowired
     public AddRequestMetricsHandler(MetricRegistry metricRegistry) {
         this.metricRegistry = metricRegistry;
         this.requestTimer = metricRegistry.timer(METRIC_REQUEST_TIME);
-    }
-
-    @PostConstruct
-    public void init() {
-        requestTimer = metricRegistry.timer(METRIC_REQUEST_TIME);
     }
 
     @Override
@@ -42,7 +34,7 @@ public class AddRequestMetricsHandler implements Handler<RoutingContext> {
 
         String route = request.path().replace("/", "");
 
-        logger.info("Accepted request {} {}", request.method(), request.uri());
+        logger.debug("Accepted request {} {}", request.method(), request.uri());
 
         Timer.Context timer = requestTimer.time();
 
@@ -50,7 +42,7 @@ public class AddRequestMetricsHandler implements Handler<RoutingContext> {
                 metricRegistry.timer(String.format(METRIC_REQUEST_ROUTE_TIME_TEMPLATE, route)).time();
 
         response.bodyEndHandler(v -> {
-            logger.info("Response sent for {}", routingContext.request().uri());
+            logger.debug("Response sent for {}", routingContext.request().uri());
 
             timer.stop();
             routeTimer.stop();
