@@ -14,3 +14,4 @@ buildNumber.properties
 .idea
 
 shared-id-endpoint.iml
+node_modules
