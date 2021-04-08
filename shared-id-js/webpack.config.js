@@ -2,7 +2,7 @@ const path = require("path");
 const TerserPlugin = require("terser-webpack-plugin");
 
 const outputDir = "dist";
-const filename = "sharedid.js";
+const filename = "sharedid.cookie.js";
 
 module.exports = {
     devtool: "source-map",
