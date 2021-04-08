@@ -1,0 +1,27 @@
+{
+  "name": "sharedid.cookie",
+  "description": "Shared ID Cookie",
+  "version": "1.0.0",
+  "main": "dist/sharedid.cookie.js",
+  "files": [
+    "dist"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git@github.rp-core.com:DMP/sharedid.cookie.git"
+  },
+  "license": "Apache-2.0",
+  "scripts": {
+    "dist": "webpack",
+    "test": "npm run dist && cp -f dist/* docs/ && serve docs -l 9000"
+  },
+  "devDependencies": {
+    "serve": "^11.3.2",
+    "terser-webpack-plugin": "^5.1.1",
+    "webpack": "^5.30.0",
+    "webpack-cli": "^4.6.0"
+  },
+  "dependencies": {
+    "jsencrypt": "^3.1.0"
+  }
+}

@@ -1,0 +1,16 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<title>Shared ID Cookie</title>
+	</head>
+
+	<body>
+		<h1>Shared ID Cookie demo</h1>
+		<p>Once the page loads, check the cookie for one that has the name <code>sharedid</code>.</p>
+
+		<script src="./sharedid.cookie.js"></script>
+		<script>
+			window.sharedIdCookie("sharedid-value", "http://localhost:9000/sharedid.pub");
+		</script>
+	</body>
+</html>
