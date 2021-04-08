@@ -2,7 +2,7 @@
   "name": "sharedid.cookie",
   "description": "Shared ID Cookie Library",
   "version": "1.0.0",
-  "main": "dist/sharedid.js",
+  "main": "dist/sharedid.cookie.js",
   "files": [
     "dist"
   ],
