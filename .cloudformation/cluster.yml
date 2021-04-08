@@ -30,7 +30,7 @@ Parameters:
   # target CPU utilization (%)
   AutoScalingTargetValue:
     Type: Number
-    Default: 50
+    Default: 80
   Environment:
     Type: String
     Default: "qa"
@@ -274,7 +274,7 @@ Resources:
         MaximumPercent: 200
       DesiredCount: 2
       # This may need to be adjusted if the container takes a while to start up
-      HealthCheckGracePeriodSeconds: 30
+      HealthCheckGracePeriodSeconds: 5
       LaunchType: FARGATE
       NetworkConfiguration:
         AwsvpcConfiguration:
@@ -292,18 +292,18 @@ Resources:
   TargetGroup:
     Type: AWS::ElasticLoadBalancingV2::TargetGroup
     Properties:
-      HealthCheckIntervalSeconds: 10
+      HealthCheckIntervalSeconds: 30
       # will look for a 200 status code by default unless specified otherwise
       HealthCheckPath: !Ref HealthCheckPath
       HealthCheckTimeoutSeconds: 5
       UnhealthyThresholdCount: 2
-      HealthyThresholdCount: 2
+      HealthyThresholdCount: 5
       Name: !Join [ '', [ !Ref AWS::StackName, TargetGroup ] ]
       Port: !Ref ContainerPort
       Protocol: HTTP
       TargetGroupAttributes:
         - Key: deregistration_delay.timeout_seconds
-          Value: 60 # default is 300
+          Value: 300 # default is 300
       TargetType: ip
       VpcId: !Ref VPC
   ListenerHTTPS:
@@ -373,9 +373,8 @@ Resources:
       TargetTrackingScalingPolicyConfiguration:
         PredefinedMetricSpecification:
           PredefinedMetricType: ECSServiceAverageCPUUtilization
-        ScaleInCooldown: 10
-        ScaleOutCooldown: 10
-        # Keep things at or lower than 50% CPU utilization, for example
+        ScaleInCooldown: 300
+        ScaleOutCooldown: 300
         TargetValue: !Ref AutoScalingTargetValue
 Outputs:
   Cluster:
