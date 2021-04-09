@@ -7,7 +7,7 @@
     "dist",
     "src"
   ],
-  "repository": "https://github.rp-core.com/DMP/sharedid.cookie.git",
+  "repository": "https://github.com/prebid/share-id.git",
   "license": "Apache-2.0",
   "scripts": {
     "dist": "webpack",

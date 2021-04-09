@@ -2,7 +2,6 @@ version: 2.1
 
 orbs:
   cloudformation: frameio/cloudformation@0.17.3
-#  aws-ecr: circleci/aws-ecr@6.14.0
   maven: circleci/maven@1.0.3 # https://circleci.com/developer/orbs/orb/circleci/maven
 
 # Main Only Branch filter
@@ -12,7 +11,6 @@ main_only: &main_only
     branches:
       only:
         - main
-        - 'add-task-deployment-from-build'
 
 # Global variables/parameters
 parameters:
@@ -22,9 +20,6 @@ parameters:
   cluster-template:
     type: string
     default: './.cloudformation/cluster.yml'
-  service-template:
-    type: string
-    default: './.cloudformation/service.yml'
   repo-template:
     type: string
     default: './.cloudformation/repo.yml'
@@ -56,41 +51,8 @@ parameters:
     type: string
     default: 'Go to Production?'
 
-# Global defined executor for all the jobs
-executors:
-  docker-executor:
-    docker:
-      - image: cimg/openjdk:11.0
-
 # Reusable Jobs
-# @TODO: not used right now, but should be tested to ensure that they work and do what is expected; e.g. build, test, & publish
 jobs:
-  build:
-    executor: docker-executor
-    steps:
-      - maven/test:
-          name: 'Building'
-          command: 'build' # same as `mvn build`
-
-  unit_test:
-    executor: docker-executor
-    steps:
-      - maven/test # checkout, build, test, and upload test results
-
-  # same as `mvn package`
-  package:
-    executor: docker-executor
-    steps:
-      - maven/test:
-          name: 'Packing'
-          command: 'package'
-      - maven/test:
-          name: 'Building Docker image'
-          command: 'docker:build'
-      - maven/test:
-          name: 'Pushing Docker image'
-          command: 'docker:push'
-
   publish:
     docker:
       - image: cimg/openjdk:11.0
@@ -117,29 +79,21 @@ workflows:
           name: << pipeline.parameters.job-name-deploy-staging >>
           stack_name: << pipeline.parameters.project-name >>-staging
           template: << pipeline.parameters.cluster-template >>
-          args: --capabilities CAPABILITY_NAMED_IAM --no-fail-on-empty-changeset --parameter-overrides Certificate=<< pipeline.parameters.certificate-staging >> Image=<< pipeline.parameters.repo >>/sharedid:<< pipeline.git.revision >> Environment=qa
+          args: --capabilities CAPABILITY_NAMED_IAM --no-fail-on-empty-changeset --parameter-overrides Certificate=<< pipeline.parameters.certificate-staging >> Image=<< pipeline.parameters.repo >>/sharedid:<< pipeline.git.revision >> Environment=qa CPU=256 Memory=512
           <<: *main_only
           requires:
             - << pipeline.parameters.job-name-publish >>
-#         requires:
-#           - 'Deploy to ECR'
-#  production:
-#    jobs:
-#      - start-deploy:
-#          name: << pipeline.parameters.job-name-production-approval >>
-#          type: approval
-#          <<: *main_only
-##      - cloudformation/deploy:
-##          name: 'Deploy to ECR'
-##          stack_name: SharedID-repo
-##          template: << pipeline.parameters.repo-template >>
-##          args: --no-fail-on-empty-changeset --parameter-overrides="RepoName=SharedID"
-##          <<: *main_only
-#      - cloudformation/deploy:
-#          name: << pipeline.parameters.job-name-deploy-production >>
-#          stack_name: << pipeline.parameters.project-name >>-prod-1 # stack_name has to be short here, since we're using it for constructin of other names in Cloudformation, and it has a 32 character length
-#          template: << pipeline.parameters.cluster-template >>
-#          args: --capabilities CAPABILITY_NAMED_IAM --no-fail-on-empty-changeset --parameter-overrides Certificate=arn:aws:acm:us-west-2:888340278975:certificate/f2c4fcd1-2061-41c0-a0f5-c14124cd1b3b
-#          requires:
-#            - << pipeline.parameters.job-name-production-approval >>
-#          <<: *main_only
+  production:
+    jobs:
+      - start-deploy:
+          name: << pipeline.parameters.job-name-production-approval >>
+          type: approval
+          <<: *main_only
+      - cloudformation/deploy:
+          name: << pipeline.parameters.job-name-deploy-production >>
+          stack_name: << pipeline.parameters.project-name >>-prod # stack_name has to be short here, since we're using it for construction of other names in Cloudformation, and it has a 32 character length
+          template: << pipeline.parameters.cluster-template >>
+          args: --capabilities CAPABILITY_NAMED_IAM --no-fail-on-empty-changeset --parameter-overrides Certificate=<< pipeline.parameters.certificate-prod >> Image=<< pipeline.parameters.repo >>/sharedid:<< pipeline.git.revision >> Environment=prod CPU=2048 Memory=4096
+          requires:
+            - << pipeline.parameters.job-name-production-approval >>
+          <<: *main_only
