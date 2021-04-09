@@ -12,11 +12,32 @@ npm install --save sharedid.cookie
 
 After including the source code, call the function as follows:
 
-```javascript
-window.sharedIdCookie("some-value", "://example.com/sharedid.pub");
+```html
+<script src="./sharedid.cookie.min.js"></script>
+<script>
+    sharedIDCookie("sharedid-value", "http://localhost:9000/sharedid.pub");
+    sharedIDCookie("sharedid-value");
+    sharedIDCookie();
+/script>
 ```
 
-The first parameter is the `value` of the cookie that will encrypted and is required.  The second parameter is the `url` for where the Shared ID public key is hosted.  By default it points to the correct location, but in the event you need to override it, this is how you would do it.
+Please don't copy/paste this example as its calling it 3 different times to show you the possible options.  Choose the one that best fits your needs and read the API docs below to help further decide based on the parameters of the function.
+
+## API
+
+#### sharedIDCookie(uid, url);
+
+#### uid
+
+Type: `String`
+
+A UID string that will be encrypted and stored as the value of the cookie at the `sharedid` namespace. If one is not passed in, an [UUID (version 4)](https://www.ietf.org/rfc/rfc4122.txt) will be created for you.
+
+#### url
+
+Type: `String`
+
+The URL location to the public RSA key for encrypting.  If one is not provided, it will default the Shared ID RSA key.
 
 ## How We Version
 

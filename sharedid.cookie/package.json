@@ -2,14 +2,12 @@
   "name": "sharedid.cookie",
   "description": "Shared ID Cookie",
   "version": "1.0.0",
-  "main": "dist/sharedid.cookie.js",
+  "main": "dist/sharedid.cookie.min.js",
   "files": [
-    "dist"
+    "dist",
+    "src"
   ],
-  "repository": {
-    "type": "git",
-    "url": "git@github.com:prebid/share-id.git"
-  },
+  "repository": "https://github.com/prebid/share-id.git",
   "license": "Apache-2.0",
   "scripts": {
     "dist": "webpack",
@@ -22,6 +20,7 @@
     "webpack-cli": "^4.6.0"
   },
   "dependencies": {
-    "jsencrypt": "^3.1.0"
+    "jsencrypt": "^3.1.0",
+    "uuid": "^8.3.2"
   }
 }
