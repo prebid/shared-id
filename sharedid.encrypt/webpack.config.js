@@ -2,7 +2,7 @@ const path = require("path");
 const TerserPlugin = require("terser-webpack-plugin");
 
 const outputDir = "dist";
-const filename = "sharedid.cookie.min.js";
+const filename = "sharedid.encrypt.min.js";
 
 module.exports = {
 	devtool: "source-map",
@@ -17,7 +17,7 @@ module.exports = {
 		filename,
 		path: path.resolve(__dirname, outputDir),
 		library: {
-			name: 'sharedIDCookie',
+			name: 'sharedIDEncrypt',
 			type: 'assign',
 			export: 'default',
 		},

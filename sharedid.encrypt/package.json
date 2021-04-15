@@ -1,8 +1,8 @@
 {
-  "name": "sharedid.cookie",
-  "description": "Shared ID Cookie",
-  "version": "1.1.0",
-  "main": "dist/sharedid.cookie.min.js",
+  "name": "sharedid.encrypt",
+  "description": "Shared ID Encrypt",
+  "version": "1.0.0",
+  "main": "dist/sharedid.encrypt.min.js",
   "files": [
     "dist",
     "src"
