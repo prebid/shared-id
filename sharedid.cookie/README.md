@@ -1,11 +1,11 @@
-# SharedID Cookie
+# SharedID Encrypt
 
-SharedID.org Cookie
+SharedID.org Encrypt
 
 ## Installation
 
 ```bash
-npm install --save sharedid.cookie
+npm install --save sharedid.encrypt
 ```
 
 ## Usage
@@ -13,11 +13,11 @@ npm install --save sharedid.cookie
 After including the source code, call the function as follows:
 
 ```html
-<script src="./sharedid.cookie.min.js"></script>
+<script src="./sharedid.encrypt.min.js"></script>
 <script>
-    sharedIDCookie("sharedid-value", "http://localhost:9000/sharedid.pub");
-    sharedIDCookie("sharedid-value");
-    sharedIDCookie();
+    sharedIDEncrypt("sharedid-value", "http://localhost:9000/sharedid.pub");
+    sharedIDEncrypt("sharedid-value");
+    sharedIDEncrypt().then(signal => console.log(signal));
 /script>
 ```
 
@@ -25,13 +25,15 @@ Please don't copy/paste this example as its calling it 3 different times to show
 
 ## API
 
-#### sharedIDCookie(uid, url);
+#### sharedIDencrypt(uid?, url?);
+
+Returns a `Promise` with an encrypted string.
 
 #### uid
 
 Type: `String`
 
-A UID string that will be encrypted and stored as the value of the cookie at the `sharedid` namespace. If one is not passed in, an [UUID (version 4)](https://www.ietf.org/rfc/rfc4122.txt) will be created for you.
+A UID string that will be encrypted and stored as a string. If one is not passed in, an [UUID (version 4)](https://www.ietf.org/rfc/rfc4122.txt) will be created for you.
 
 #### url
 
