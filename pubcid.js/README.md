@@ -3,11 +3,16 @@
 ## Installation
 
 ```bash
-npm install
+npm install && npm run test
 ```
 
 ## Usage
-
+Collector script URL: https://id.sharedid.org/lib/pubcid.min.js
+```
+<script>
+	googletag.encryptedSignalSource['pubcid.org']();
+</script>
+```
 ## API
 
 ## License
