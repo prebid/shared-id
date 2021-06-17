@@ -12,6 +12,7 @@ import io.vertx.ext.web.handler.StaticHandler;
 import io.vertx.ext.web.handler.TemplateHandler;
 import io.vertx.ext.web.templ.handlebars.HandlebarsTemplateEngine;
 import org.sharedid.endpoint.handler.*;
+import org.sharedid.endpoint.handler.pubcid.PubcidHandler;
 import org.sharedid.endpoint.util.HandlerRegistry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -109,6 +110,9 @@ public class RouteConfiguration {
                 .handler(handlerRegistry.get(CheckCcpaConsentHandler.class))
                 .handler(handlerRegistry.get(SetSharedIdCookieHandler.class))
                 .handler(handlerRegistry.get(RespondSharedIdHandler.class));
+
+        router.get("/pubcid")
+                .handler(handlerRegistry.get(PubcidHandler.class));
 
         router.get("/optout")
                 .handler(handlerRegistry.get(AddDefaultHeadersHandler.class))
