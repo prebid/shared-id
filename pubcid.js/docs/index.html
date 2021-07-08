@@ -1,14 +1,15 @@
 <!doctype html>
 <html lang="en">
 <head>
-	<title>Pubcid Collector Script</title>
+    <title>Pubcid Collector Script</title>
 </head>
 <body>
 <h1>Pubcid Collector Script Demo</h1>
 <script src="./pubcid.min.js"></script>
 <script>
-	googletag.encryptedSignalSource['pubcid.org']();
+    const pubcid = googletag.encryptedSignalProviders.find(el => el.id === 'pubcid.org');
+    pubcid.collectorFunction();
 </script>
-Hello
+Cookie pubcid.org stored
 </body>
 </html>
