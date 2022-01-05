@@ -34,7 +34,7 @@ public class AddRequestMetricsHandler implements Handler<RoutingContext> {
 
         String route = request.path().replace("/", "");
 
-        logger.debug("Accepted request {} {}", request.method(), request.uri());
+        logger.info("Accepted request {} {}", request.method(), request.uri());
 
         Timer.Context timer = requestTimer.time();
 
@@ -42,7 +42,7 @@ public class AddRequestMetricsHandler implements Handler<RoutingContext> {
                 metricRegistry.timer(String.format(METRIC_REQUEST_ROUTE_TIME_TEMPLATE, route)).time();
 
         response.bodyEndHandler(v -> {
-            logger.debug("Response sent for {}", routingContext.request().uri());
+            logger.info("Response sent for {}", routingContext.request().uri());
 
             timer.stop();
             routeTimer.stop();

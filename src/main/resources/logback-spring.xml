@@ -77,9 +77,14 @@
     </springProfile>
 
     <springProfile name="staging,prod">
+        <logger name="org.sharedid.endpoint" level="INFO"/>
         <logger name="org.sharedid.logs.requests" level="INFO" additivity="false">
             <appender-ref ref="ASYNC_REQUESTS"/>
         </logger>
+
+        <root level="INFO">
+            <appender-ref ref="CONSOLE"/>
+        </root>
 
         <root level="WARN">
             <appender-ref ref="ASYNC_FILE"/>
