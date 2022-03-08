@@ -2,14 +2,25 @@ const SOURCE = 'pubcid.org';
 
 window.googletag = window.googletag || {cmd: []};
 window.googletag.encryptedSignalProviders = window.googletag.encryptedSignalProviders || [];
+window.pbjs =  window.pbjs || [];
 
 function collector() {
-    let value = getCookie();
-    if(value){
-        return;
-    }
-    value = generateUUID();
-    document.cookie = SOURCE + '=' + value;
+    return new Promise((resolve, reject) => {
+        let cookieValue = getCookie();
+        if (cookieValue) {
+            resolve(cookieValue);
+        }
+        const pubCommonUids = pbjs.getUserIdsAsEids().filter(function (eids) {
+            return eids && eids.source == SOURCE;
+        });
+        cookieValue = pubCommonUids ? pubCommonUids[0].uids[0].id : generateUUID();
+        document.cookie = SOURCE + '=' + cookieValue;
+        if (cookieValue) {
+            resolve(cookieValue);
+        } else {
+            reject("Setting cookie failed");
+        }
+    });
 }
 
 /**
@@ -56,7 +67,6 @@ function getRandomData() {
 }
 
 googletag.encryptedSignalProviders.push({
-    id: 'pubcid.org',
+    id: SOURCE,
     collectorFunction: collector
 });
-
