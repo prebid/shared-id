@@ -20,25 +20,6 @@ function collector() {
 }
 
 /**
- * Returns the cookie
- * @returns {string}
- */
-function getCookie() {
-    let name = SOURCE + "=";
-    let ca = document.cookie.split(';');
-    for(let i = 0; i < ca.length; i++) {
-        let c = ca[i];
-        while (c.charAt(0) == ' ') {
-            c = c.substring(1);
-        }
-        if (c.indexOf(name) == 0) {
-            return c.substring(name.length, c.length);
-        }
-    }
-    return "";
-}
-
-/**
  * Returns a random v4 UUID of the form xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx,
  * where each x is replaced with a random hexadecimal digit from 0 to f,
  * and y is replaced with a random hexadecimal digit from 8 to b.
