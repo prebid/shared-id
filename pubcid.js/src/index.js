@@ -6,19 +6,15 @@ window.pbjs =  window.pbjs || [];
 
 function collector() {
     return new Promise((resolve, reject) => {
-        let cookieValue = getCookie();
-        if (cookieValue) {
-            resolve(cookieValue);
-        }
         const pubCommonUids = pbjs.getUserIdsAsEids().filter(function (eids) {
             return eids && eids.source == SOURCE;
         });
-        cookieValue = pubCommonUids ? pubCommonUids[0].uids[0].id : generateUUID();
-        document.cookie = SOURCE + '=' + cookieValue;
-        if (cookieValue) {
-            resolve(cookieValue);
+       let pubcidValue = pubCommonUids ? pubCommonUids[0].uids[0].id : generateUUID();
+        window.localStorage.setItem(SOURCE, pubcidValue);
+        if (pubcidValue) {
+            resolve(pubcidValue);
         } else {
-            reject("Setting cookie failed");
+            reject("Setting local storage failed");
         }
     });
 }
