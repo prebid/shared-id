@@ -2,33 +2,21 @@ const SOURCE = 'pubcid.org';
 
 window.googletag = window.googletag || {cmd: []};
 window.googletag.encryptedSignalProviders = window.googletag.encryptedSignalProviders || [];
+window.pbjs =  window.pbjs || [];
 
 function collector() {
-    let value = getCookie();
-    if(value){
-        return;
-    }
-    value = generateUUID();
-    document.cookie = SOURCE + '=' + value;
-}
-
-/**
- * Returns the cookie
- * @returns {string}
- */
-function getCookie() {
-    let name = SOURCE + "=";
-    let ca = document.cookie.split(';');
-    for(let i = 0; i < ca.length; i++) {
-        let c = ca[i];
-        while (c.charAt(0) == ' ') {
-            c = c.substring(1);
+    return new Promise((resolve, reject) => {
+        const pubCommonUids = pbjs.getUserIdsAsEids().filter(function (eids) {
+            return eids && eids.source == SOURCE;
+        });
+       let pubcidValue = pubCommonUids ? pubCommonUids[0].uids[0].id : generateUUID();
+        window.localStorage.setItem(SOURCE, pubcidValue);
+        if (pubcidValue) {
+            resolve(pubcidValue);
+        } else {
+            reject("Setting local storage failed");
         }
-        if (c.indexOf(name) == 0) {
-            return c.substring(name.length, c.length);
-        }
-    }
-    return "";
+    });
 }
 
 /**
@@ -56,7 +44,6 @@ function getRandomData() {
 }
 
 googletag.encryptedSignalProviders.push({
-    id: 'pubcid.org',
+    id: SOURCE,
     collectorFunction: collector
 });
-
