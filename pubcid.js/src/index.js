@@ -9,7 +9,7 @@ function collector() {
         const pubCommonUids = pbjs.getUserIdsAsEids().filter(function (eids) {
             return eids && eids.source == SOURCE;
         });
-       let pubcidValue = pubCommonUids ? pubCommonUids[0].uids[0].id : generateUUID();
+        let pubcidValue = pubCommonUids && pubCommonUids.length ? pubCommonUids[0].uids[0].id : generateUUID();
         window.localStorage.setItem(SOURCE, pubcidValue);
         if (pubcidValue) {
             resolve(pubcidValue);
