@@ -1,6 +1,5 @@
 console.warn("Warning: The Shared ID Google Deploy Secure Signals script is deprecated in favor of the Prebid User ID method. Please adjust your GAM Secure Signals settings. This script may or may not function as intended.");
 
-
 const SOURCE = 'pubcid.org';
 
 window.googletag = window.googletag || {cmd: []};
